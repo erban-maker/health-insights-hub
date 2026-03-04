@@ -1,14 +1,14 @@
 import { Check } from 'lucide-react';
 
 const steps = [
-  'Personal Details',
-  'Physical Health',
-  'Lifestyle Habits',
-  'Dietary Pattern',
-  'Risk Behavior',
-  'Stress & Mental',
-  'Family History',
-  'Review',
+  { label: 'Personal Details', shortLabel: 'Personal' },
+  { label: 'Physical Health', shortLabel: 'Physical' },
+  { label: 'Lifestyle Habits', shortLabel: 'Lifestyle' },
+  { label: 'Dietary Pattern', shortLabel: 'Diet' },
+  { label: 'Risk Behavior', shortLabel: 'Risk' },
+  { label: 'Stress & Mental', shortLabel: 'Stress' },
+  { label: 'Family History', shortLabel: 'Family' },
+  { label: 'Review', shortLabel: 'Review' },
 ];
 
 interface FormStepperProps {
@@ -18,34 +18,39 @@ interface FormStepperProps {
 
 const FormStepper = ({ currentStep, onStepClick }: FormStepperProps) => {
   return (
-    <div className="flex items-center justify-between mb-8 overflow-x-auto pb-2">
-      {steps.map((label, i) => {
+    <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+      {steps.map((step, i) => {
         const isComplete = i < currentStep;
         const isCurrent = i === currentStep;
         return (
-          <div key={i} className="flex items-center flex-shrink-0">
-            <button
-              onClick={() => isComplete && onStepClick(i)}
-              className={`flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                isCurrent
+          <button
+            key={i}
+            onClick={() => isComplete && onStepClick(i)}
+            disabled={!isComplete}
+            className={`flex flex-col items-center gap-1.5 p-2 rounded-xl text-center transition-all ${
+              isCurrent
+                ? 'bg-primary/10 ring-2 ring-primary'
+                : isComplete
+                ? 'bg-primary/5 hover:bg-primary/10 cursor-pointer'
+                : 'bg-muted/50 opacity-60'
+            }`}
+          >
+            <span
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${
+                isComplete
+                  ? 'bg-primary text-primary-foreground'
+                  : isCurrent
                   ? 'bg-primary text-primary-foreground shadow-glow'
-                  : isComplete
-                  ? 'bg-primary/10 text-primary cursor-pointer hover:bg-primary/20'
-                  : 'bg-muted text-muted-foreground'
+                  : 'bg-muted-foreground/20 text-muted-foreground'
               }`}
-              disabled={!isComplete}
             >
-              <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                isComplete ? 'bg-primary text-primary-foreground' : isCurrent ? 'bg-primary-foreground text-primary' : 'bg-muted-foreground/20 text-muted-foreground'
-              }`}>
-                {isComplete ? <Check className="w-3.5 h-3.5" /> : i + 1}
-              </span>
-              <span className="hidden md:inline">{label}</span>
-            </button>
-            {i < steps.length - 1 && (
-              <div className={`w-4 lg:w-8 h-0.5 mx-1 ${isComplete ? 'bg-primary' : 'bg-border'}`} />
-            )}
-          </div>
+              {isComplete ? <Check className="w-4 h-4" /> : i + 1}
+            </span>
+            <span className="text-[10px] md:text-xs font-medium leading-tight">
+              <span className="md:hidden">{step.shortLabel}</span>
+              <span className="hidden md:inline">{step.label}</span>
+            </span>
+          </button>
         );
       })}
     </div>
