@@ -1,7 +1,7 @@
 import { useFormData } from '@/contexts/FormContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { ClipboardCheck, Edit } from 'lucide-react';
+import { ClipboardCheck, Edit, ShieldCheck, AlertCircle } from 'lucide-react';
 
 interface Props { onSubmit: () => void; onBack: () => void; onEdit: (step: number) => void; }
 
@@ -62,6 +62,10 @@ const ReviewConfirmation = ({ onSubmit, onBack, onEdit }: Props) => {
     },
   ];
 
+  const filledFields = sections.flatMap(s => s.fields).filter(f => f.value && f.value !== '—' && f.value !== ' cm' && f.value !== ' kg' && f.value !== ' glasses' && f.value !== ' hrs');
+  const totalFields = sections.flatMap(s => s.fields).length;
+  const completionRate = Math.round((filledFields.length / totalFields) * 100);
+
   return (
     <Card className="animate-scale-in border-0 shadow-[var(--shadow-lg)]">
       <CardHeader>
@@ -76,6 +80,21 @@ const ReviewConfirmation = ({ onSubmit, onBack, onEdit }: Props) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Completion summary */}
+        <div className="flex items-center gap-3 rounded-lg bg-primary/5 border border-primary/10 p-4">
+          <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
+          <div className="flex-1">
+            <p className="text-sm font-semibold text-foreground">Data Completion: {completionRate}%</p>
+            <p className="text-xs text-muted-foreground">{filledFields.length} of {totalFields} fields completed. Click "Edit" on any section to make changes.</p>
+          </div>
+        </div>
+
+        {/* Important notice */}
+        <div className="flex items-center gap-3 rounded-lg bg-muted/50 border p-3">
+          <AlertCircle className="w-4 h-4 text-muted-foreground shrink-0" />
+          <p className="text-xs text-muted-foreground">Please review all information carefully. Accurate data ensures more reliable risk predictions and personalized recommendations.</p>
+        </div>
+
         {sections.map(section => (
           <div key={section.title} className="rounded-xl border bg-muted/30 p-4">
             <div className="flex items-center justify-between mb-3">

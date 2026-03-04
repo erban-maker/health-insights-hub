@@ -83,16 +83,9 @@ const Dashboard = () => {
 
       <div className="container mx-auto px-4 py-8 max-w-3xl">
         {/* Page-like header with step number */}
-        <div className="mb-2 flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest">{meta.subtitle}</p>
-            <h1 className="text-2xl font-display font-bold mt-1">{meta.title}</h1>
-          </div>
-          <div className="text-right">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground font-display font-extrabold text-lg shadow-glow">
-              {meta.number}
-            </div>
-          </div>
+        <div className="mb-2">
+          <p className="text-xs font-semibold text-primary uppercase tracking-widest">{meta.subtitle}</p>
+          <h1 className="text-2xl font-display font-bold mt-1">{meta.title}</h1>
         </div>
 
         {/* Progress bar */}
