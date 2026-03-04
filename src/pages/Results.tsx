@@ -4,7 +4,7 @@ import { useFormData } from '@/contexts/FormContext';
 import { calculateRisk, RiskResult } from '@/lib/riskCalculator';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, LogOut, RotateCcw, ArrowLeft } from 'lucide-react';
+import { Shield, LogOut, RotateCcw, ArrowLeft, AlertCircle, CheckCircle, Info } from 'lucide-react';
 import { useMemo } from 'react';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
 
@@ -30,6 +30,9 @@ const Results = () => {
     navigate('/');
   };
 
+  const highRiskCount = result.categories.filter(c => c.level === 'High').length;
+  const lowRiskCount = result.categories.filter(c => c.level === 'Low').length;
+
   return (
     <div className="min-h-screen bg-background">
       <nav className="border-b bg-card">
@@ -50,7 +53,8 @@ const Results = () => {
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-2xl font-display font-bold">Risk Analysis Results</h1>
+            <p className="text-xs font-semibold text-primary uppercase tracking-widest">Form 12 of 12</p>
+            <h1 className="text-2xl font-display font-bold mt-1">Risk Analysis Results</h1>
             <p className="text-sm text-muted-foreground">Based on your lifestyle assessment</p>
           </div>
           <div className="flex gap-2">
@@ -60,6 +64,21 @@ const Results = () => {
             <Button variant="outline" size="sm" onClick={handleRetake} className="gap-1.5">
               <RotateCcw className="w-4 h-4" /> Retake
             </Button>
+          </div>
+        </div>
+
+        {/* Summary alert */}
+        <div className={`rounded-lg p-4 mb-6 flex gap-3 border ${highRiskCount > 0 ? 'bg-destructive/5 border-destructive/20' : 'bg-primary/5 border-primary/20'}`}>
+          {highRiskCount > 0 ? <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" /> : <CheckCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />}
+          <div>
+            <p className="text-sm font-semibold text-foreground">
+              {highRiskCount > 0 ? `${highRiskCount} High Risk Area${highRiskCount > 1 ? 's' : ''} Detected` : 'Looking Good!'}
+            </p>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {highRiskCount > 0
+                ? 'Please review the recommendations below carefully. Consult a healthcare professional for detailed guidance.'
+                : `${lowRiskCount} of ${result.categories.length} categories show low risk. Keep maintaining your healthy lifestyle!`}
+            </p>
           </div>
         </div>
 
@@ -74,13 +93,18 @@ const Results = () => {
               </div>
             </div>
             <p className="text-xl font-display font-bold" style={{ color: riskColors[result.overallRisk] }}>{result.overallRisk} Risk</p>
+            <p className="text-xs text-muted-foreground mt-2 max-w-md mx-auto">
+              {result.overallRisk === 'Low' && 'Your lifestyle habits indicate a low risk for chronic diseases. Continue your healthy practices.'}
+              {result.overallRisk === 'Moderate' && 'Some areas need attention. Following the recommendations can significantly reduce your risk.'}
+              {result.overallRisk === 'High' && 'Multiple risk factors detected. We strongly recommend consulting a healthcare professional.'}
+            </p>
           </CardContent>
         </Card>
 
         {/* Charts */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <Card className="border-0 shadow-[var(--shadow-md)]">
-            <CardHeader><CardTitle className="font-display text-base">Risk Radar</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="font-display text-base">Risk Radar Chart</CardTitle></CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <RadarChart data={radarData}>
@@ -90,11 +114,12 @@ const Results = () => {
                   <Radar dataKey="score" stroke="hsl(174, 62%, 38%)" fill="hsl(174, 62%, 38%)" fillOpacity={0.2} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
+              <p className="text-xs text-muted-foreground text-center mt-2">Higher values indicate higher risk levels</p>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-[var(--shadow-md)]">
-            <CardHeader><CardTitle className="font-display text-base">Category Scores</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="font-display text-base">Category-Wise Risk Scores</CardTitle></CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={barData} layout="vertical">
@@ -109,12 +134,19 @@ const Results = () => {
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
+              <div className="flex justify-center gap-4 mt-2">
+                {Object.entries(riskColors).map(([label, color]) => (
+                  <span key={label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: color }} /> {label}
+                  </span>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>
 
         {/* Recommendations */}
-        <Card className="border-0 shadow-[var(--shadow-md)]">
+        <Card className="border-0 shadow-[var(--shadow-md)] mb-6">
           <CardHeader><CardTitle className="font-display text-base">Personalized Recommendations</CardTitle></CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -139,6 +171,15 @@ const Results = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* Disclaimer */}
+        <div className="rounded-lg bg-muted/50 border p-4 flex gap-3">
+          <Info className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-semibold text-foreground">Disclaimer</p>
+            <p className="text-xs text-muted-foreground mt-0.5">This tool provides an estimated risk assessment based on lifestyle data and a rule-based scoring algorithm. It is not a medical diagnosis. Always consult a qualified healthcare professional for accurate medical advice and treatment.</p>
+          </div>
+        </div>
       </div>
     </div>
   );

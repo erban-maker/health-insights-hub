@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Shield, LogIn } from 'lucide-react';
+import { Shield, LogIn, Lock, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {
@@ -44,11 +44,11 @@ const Login = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-muted-foreground" /> Email Address</Label>
                 <Input id="email" type="email" placeholder="john@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-muted-foreground" /> Password</Label>
                 <Input id="password" type="password" placeholder="Enter password" value={password} onChange={e => setPassword(e.target.value)} required />
               </div>
               <Button type="submit" className="w-full" disabled={!email || !password}>Login</Button>
@@ -56,6 +56,14 @@ const Login = () => {
                 Don't have an account? <Link to="/register" className="text-primary font-medium hover:underline">Register</Link>
               </p>
             </form>
+
+            {/* Security notice */}
+            <div className="mt-5 pt-4 border-t text-center">
+              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+                <Lock className="w-3 h-3" />
+                <span>Your data is stored securely and never shared</span>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </div>
