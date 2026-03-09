@@ -1,108 +1,119 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFormData } from '@/contexts/FormContext';
-import { calculateRisk, RiskResult } from '@/lib/riskCalculator';
+import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, LogOut, RotateCcw, ArrowLeft, AlertCircle, CheckCircle, Info } from 'lucide-react';
-import { useMemo } from 'react';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
+import { RotateCcw, ArrowRight, AlertCircle, CheckCircle, Info, TrendingUp, Heart, Activity, Brain } from 'lucide-react';
+import { useEffect, useMemo } from 'react';
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, PieChart, Pie } from 'recharts';
 
-const riskColors = { Low: 'hsl(152, 60%, 40%)', Moderate: 'hsl(36, 90%, 55%)', High: 'hsl(0, 72%, 51%)' };
+const riskColors = { Low: 'hsl(152, 60%, 40%)', Medium: 'hsl(36, 90%, 55%)', High: 'hsl(0, 72%, 51%)' };
 
 const Results = () => {
-  const { user, logout } = useAuth();
-  const { formData, resetForm } = useFormData();
+  const { user } = useAuth();
+  const { predictions, resetForm } = useFormData();
   const navigate = useNavigate();
 
-  const result: RiskResult = useMemo(() => calculateRisk(formData), [formData]);
+  useEffect(() => {
+    if (!user) navigate('/login');
+  }, [user, navigate]);
 
-  const radarData = result.categories.map(c => ({ name: c.name, score: c.score, fullMark: 10 }));
-  const barData = result.categories.map(c => ({ name: c.name, score: c.score, level: c.level }));
+  const result = predictions[0];
 
-  const handleRetake = () => {
-    resetForm();
-    navigate('/dashboard');
-  };
+  if (!user || !result) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="container mx-auto px-4 py-20 text-center">
+          <h2 className="text-xl font-display font-bold mb-4">No Results Yet</h2>
+          <p className="text-muted-foreground mb-6">Complete the health check form to see your results.</p>
+          <Button onClick={() => navigate('/health-check')}>Take Health Check</Button>
+        </div>
+      </div>
+    );
+  }
 
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  const radarData = result.categoryScores.map(c => ({ name: c.name, score: c.score, fullMark: 25 }));
+  const barData = result.categoryScores.map(c => ({ name: c.name, score: c.score, level: c.level }));
 
-  const highRiskCount = result.categories.filter(c => c.level === 'High').length;
-  const lowRiskCount = result.categories.filter(c => c.level === 'Low').length;
+  const scoreColor = riskColors[result.riskLevel];
+  const scoreAngle = (result.healthScore / 100) * 360;
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="border-b bg-card">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Shield className="w-6 h-6 text-primary" />
-            <span className="font-display font-bold">HealthPredict</span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">{user?.name}</span>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5">
-              <LogOut className="w-4 h-4" /> Logout
-            </Button>
-          </div>
-        </div>
-      </nav>
-
+      <Navbar />
       <div className="container mx-auto px-4 py-8 max-w-5xl">
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
           <div>
-            <p className="text-xs font-semibold text-primary uppercase tracking-widest">Form 12 of 12</p>
-            <h1 className="text-2xl font-display font-bold mt-1">Risk Analysis Results</h1>
-            <p className="text-sm text-muted-foreground">Based on your lifestyle assessment</p>
+            <h1 className="text-3xl font-display font-bold">AI Risk Prediction Results</h1>
+            <p className="text-muted-foreground mt-1">Based on your lifestyle assessment</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => navigate('/dashboard')} className="gap-1.5">
-              <ArrowLeft className="w-4 h-4" /> Back
-            </Button>
-            <Button variant="outline" size="sm" onClick={handleRetake} className="gap-1.5">
+            <Button variant="outline" size="sm" onClick={() => { resetForm(); navigate('/health-check'); }} className="gap-1.5">
               <RotateCcw className="w-4 h-4" /> Retake
             </Button>
+            <Button size="sm" onClick={() => navigate('/dashboard')} className="gap-1.5">
+              Dashboard <ArrowRight className="w-4 h-4" />
+            </Button>
           </div>
         </div>
 
-        {/* Summary alert */}
-        <div className={`rounded-lg p-4 mb-6 flex gap-3 border ${highRiskCount > 0 ? 'bg-destructive/5 border-destructive/20' : 'bg-primary/5 border-primary/20'}`}>
-          {highRiskCount > 0 ? <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" /> : <CheckCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />}
+        {/* Alert */}
+        <div className={`rounded-xl p-4 mb-8 flex gap-3 border ${result.riskLevel === 'High' ? 'bg-destructive/5 border-destructive/20' : result.riskLevel === 'Medium' ? 'bg-accent/10 border-accent/30' : 'bg-primary/5 border-primary/20'}`}>
+          {result.riskLevel === 'High' ? <AlertCircle className="w-5 h-5 text-destructive shrink-0 mt-0.5" /> : <CheckCircle className="w-5 h-5 text-primary shrink-0 mt-0.5" />}
           <div>
-            <p className="text-sm font-semibold text-foreground">
-              {highRiskCount > 0 ? `${highRiskCount} High Risk Area${highRiskCount > 1 ? 's' : ''} Detected` : 'Looking Good!'}
-            </p>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {highRiskCount > 0
-                ? 'Please review the recommendations below carefully. Consult a healthcare professional for detailed guidance.'
-                : `${lowRiskCount} of ${result.categories.length} categories show low risk. Keep maintaining your healthy lifestyle!`}
-            </p>
+            <p className="text-sm font-semibold">{result.riskLevel === 'High' ? 'High Risk Detected — Immediate attention recommended' : result.riskLevel === 'Medium' ? 'Moderate Risk — Some lifestyle improvements needed' : 'Low Risk — Keep up the great work!'}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">This is a rule-based simulation. Consult a doctor for medical advice.</p>
           </div>
         </div>
 
-        {/* Overall Score */}
-        <Card className="border-0 shadow-[var(--shadow-lg)] mb-6">
-          <CardContent className="py-8 text-center">
-            <p className="text-sm text-muted-foreground mb-2">Overall Disease Risk</p>
-            <div className="inline-flex items-center justify-center w-28 h-28 rounded-full border-4 mb-3" style={{ borderColor: riskColors[result.overallRisk] }}>
-              <div>
-                <p className="text-3xl font-display font-extrabold" style={{ color: riskColors[result.overallRisk] }}>{result.overallScore}</p>
-                <p className="text-xs text-muted-foreground">/10</p>
+        {/* Score Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Card className="border-0 shadow-[var(--shadow-lg)] text-center">
+            <CardContent className="py-8">
+              <p className="text-sm text-muted-foreground mb-3">Health Score</p>
+              <div className="inline-flex items-center justify-center w-28 h-28 rounded-full border-4 mb-3" style={{ borderColor: scoreColor }}>
+                <div>
+                  <p className="text-4xl font-display font-extrabold" style={{ color: scoreColor }}>{result.healthScore}</p>
+                  <p className="text-xs text-muted-foreground">/100</p>
+                </div>
               </div>
-            </div>
-            <p className="text-xl font-display font-bold" style={{ color: riskColors[result.overallRisk] }}>{result.overallRisk} Risk</p>
-            <p className="text-xs text-muted-foreground mt-2 max-w-md mx-auto">
-              {result.overallRisk === 'Low' && 'Your lifestyle habits indicate a low risk for chronic diseases. Continue your healthy practices.'}
-              {result.overallRisk === 'Moderate' && 'Some areas need attention. Following the recommendations can significantly reduce your risk.'}
-              {result.overallRisk === 'High' && 'Multiple risk factors detected. We strongly recommend consulting a healthcare professional.'}
-            </p>
-          </CardContent>
-        </Card>
+              <p className="text-lg font-display font-bold" style={{ color: scoreColor }}>{result.riskLevel} Risk</p>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-[var(--shadow-md)]">
+            <CardContent className="py-8">
+              <p className="text-sm text-muted-foreground mb-3">BMI Analysis</p>
+              <p className="text-4xl font-display font-extrabold text-foreground">{result.bmi}</p>
+              <p className="text-sm font-medium mt-1" style={{ color: result.bmi < 18.5 || result.bmi >= 25 ? riskColors.Medium : riskColors.Low }}>{result.bmiCategory}</p>
+              <div className="mt-3 h-2 bg-muted rounded-full overflow-hidden">
+                <div className="h-full rounded-full transition-all" style={{ width: `${Math.min((result.bmi / 40) * 100, 100)}%`, backgroundColor: result.bmi < 18.5 || result.bmi >= 30 ? riskColors.High : result.bmi >= 25 ? riskColors.Medium : riskColors.Low }} />
+              </div>
+              <div className="flex justify-between text-[10px] text-muted-foreground mt-1">
+                <span>Underweight</span><span>Normal</span><span>Overweight</span><span>Obese</span>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 shadow-[var(--shadow-md)]">
+            <CardContent className="py-8">
+              <p className="text-sm text-muted-foreground mb-3">Predicted Diseases</p>
+              <div className="space-y-2">
+                {result.predictedDiseases.map((d, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-destructive" />
+                    <span className="text-sm font-medium">{d}</span>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <Card className="border-0 shadow-[var(--shadow-md)]">
             <CardHeader><CardTitle className="font-display text-base">Risk Radar Chart</CardTitle></CardHeader>
             <CardContent>
@@ -110,21 +121,20 @@ const Results = () => {
                 <RadarChart data={radarData}>
                   <PolarGrid stroke="hsl(195, 20%, 88%)" />
                   <PolarAngleAxis dataKey="name" tick={{ fontSize: 11, fill: 'hsl(200, 10%, 45%)' }} />
-                  <PolarRadiusAxis domain={[0, 10]} tick={false} axisLine={false} />
+                  <PolarRadiusAxis domain={[0, 25]} tick={false} axisLine={false} />
                   <Radar dataKey="score" stroke="hsl(174, 62%, 38%)" fill="hsl(174, 62%, 38%)" fillOpacity={0.2} strokeWidth={2} />
                 </RadarChart>
               </ResponsiveContainer>
-              <p className="text-xs text-muted-foreground text-center mt-2">Higher values indicate higher risk levels</p>
             </CardContent>
           </Card>
 
           <Card className="border-0 shadow-[var(--shadow-md)]">
-            <CardHeader><CardTitle className="font-display text-base">Category-Wise Risk Scores</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="font-display text-base">Category Risk Scores</CardTitle></CardHeader>
             <CardContent>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart data={barData} layout="vertical">
                   <CartesianGrid strokeDasharray="3 3" stroke="hsl(195, 20%, 88%)" />
-                  <XAxis type="number" domain={[0, 10]} tick={{ fontSize: 11 }} />
+                  <XAxis type="number" domain={[0, 25]} tick={{ fontSize: 11 }} />
                   <YAxis dataKey="name" type="category" width={110} tick={{ fontSize: 11 }} />
                   <Tooltip />
                   <Bar dataKey="score" radius={[0, 6, 6, 0]}>
@@ -145,27 +155,15 @@ const Results = () => {
           </Card>
         </div>
 
-        {/* Recommendations */}
-        <Card className="border-0 shadow-[var(--shadow-md)] mb-6">
-          <CardHeader><CardTitle className="font-display text-base">Personalized Recommendations</CardTitle></CardHeader>
+        {/* Suggestions */}
+        <Card className="border-0 shadow-[var(--shadow-md)] mb-8">
+          <CardHeader><CardTitle className="font-display text-base">Personalized Health Suggestions</CardTitle></CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {result.categories.map(cat => (
-                <div key={cat.name} className="rounded-xl border p-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: riskColors[cat.level] }} />
-                    <h4 className="font-semibold text-sm font-display">{cat.name}</h4>
-                    <span className="ml-auto text-xs font-medium px-2 py-0.5 rounded-full" style={{ backgroundColor: `${riskColors[cat.level]}20`, color: riskColors[cat.level] }}>
-                      {cat.level}
-                    </span>
-                  </div>
-                  <ul className="space-y-1">
-                    {cat.recommendations.map((rec, i) => (
-                      <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
-                        <span className="text-primary mt-0.5">•</span> {rec}
-                      </li>
-                    ))}
-                  </ul>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {result.suggestions.map((s, i) => (
+                <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-primary/5 border border-primary/10">
+                  <CheckCircle className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                  <p className="text-sm">{s}</p>
                 </div>
               ))}
             </div>
@@ -176,8 +174,8 @@ const Results = () => {
         <div className="rounded-lg bg-muted/50 border p-4 flex gap-3">
           <Info className="w-5 h-5 text-muted-foreground shrink-0 mt-0.5" />
           <div>
-            <p className="text-xs font-semibold text-foreground">Disclaimer</p>
-            <p className="text-xs text-muted-foreground mt-0.5">This tool provides an estimated risk assessment based on lifestyle data and a rule-based scoring algorithm. It is not a medical diagnosis. Always consult a qualified healthcare professional for accurate medical advice and treatment.</p>
+            <p className="text-xs font-semibold">Disclaimer</p>
+            <p className="text-xs text-muted-foreground mt-0.5">This is a rule-based simulation tool for educational purposes. It does not replace professional medical diagnosis. Always consult a qualified healthcare provider.</p>
           </div>
         </div>
       </div>

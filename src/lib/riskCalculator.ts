@@ -1,142 +1,100 @@
-import { FormData } from '@/contexts/FormContext';
+import { FormData, PredictionResult } from '@/contexts/FormContext';
 
-export interface RiskResult {
-  overallRisk: 'Low' | 'Moderate' | 'High';
-  overallScore: number;
-  categories: {
-    name: string;
-    score: number;
-    level: 'Low' | 'Moderate' | 'High';
-    recommendations: string[];
-  }[];
+function calcBMI(height: string, weight: string): number {
+  const h = parseFloat(height) / 100; // cm to m
+  const w = parseFloat(weight);
+  if (!h || !w) return 0;
+  return Math.round((w / (h * h)) * 10) / 10;
 }
 
-function categorize(score: number): 'Low' | 'Moderate' | 'High' {
-  if (score <= 3) return 'Low';
-  if (score <= 6) return 'Moderate';
-  return 'High';
+function bmiCategory(bmi: number): string {
+  if (bmi < 18.5) return 'Underweight';
+  if (bmi < 25) return 'Normal';
+  if (bmi < 30) return 'Overweight';
+  return 'Obese';
 }
 
-export function calculateRisk(data: FormData): RiskResult {
-  // BMI Risk
+export function calculateRisk(data: FormData): PredictionResult {
+  const bmi = calcBMI(data.height, data.weight);
+  const age = parseInt(data.age) || 25;
+
+  // BMI score (0-25)
   let bmiScore = 0;
-  const bmi = parseFloat(data.bmi);
-  if (bmi < 18.5) bmiScore = 3;
+  if (bmi < 18.5) bmiScore = 10;
   else if (bmi < 25) bmiScore = 0;
-  else if (bmi < 30) bmiScore = 4;
-  else bmiScore = 8;
+  else if (bmi < 30) bmiScore = 15;
+  else bmiScore = 25;
 
-  // Age Risk
+  // Age score (0-15)
   let ageScore = 0;
-  const age = parseInt(data.age);
-  if (age > 60) ageScore = 5;
-  else if (age > 45) ageScore = 3;
-  else if (age > 30) ageScore = 1;
+  if (age > 60) ageScore = 15;
+  else if (age > 45) ageScore = 10;
+  else if (age > 35) ageScore = 5;
 
-  // Lifestyle Risk
-  let lifestyleScore = 0;
-  if (data.exerciseFrequency === 'never') lifestyleScore += 4;
-  else if (data.exerciseFrequency === 'rarely') lifestyleScore += 3;
-  else if (data.exerciseFrequency === 'sometimes') lifestyleScore += 1;
-  if (data.activityLevel === 'sedentary') lifestyleScore += 3;
-  else if (data.activityLevel === 'light') lifestyleScore += 1;
-  const sleep = parseFloat(data.sleepDuration);
-  if (sleep < 5 || sleep > 10) lifestyleScore += 3;
-  else if (sleep < 6 || sleep > 9) lifestyleScore += 1;
+  // Activity score (0-20)
+  let activityScore = 0;
+  if (data.activityLevel === 'low') activityScore = 20;
+  else if (data.activityLevel === 'moderate') activityScore = 8;
+  else activityScore = 0;
 
-  // Diet Risk
-  let dietScore = 0;
-  if (data.junkFoodFrequency === 'daily') dietScore += 4;
-  else if (data.junkFoodFrequency === 'frequently') dietScore += 3;
-  else if (data.junkFoodFrequency === 'sometimes') dietScore += 1;
-  if (data.fruitVegIntake === 'rarely') dietScore += 3;
-  else if (data.fruitVegIntake === 'sometimes') dietScore += 1;
-  const water = parseInt(data.waterIntake);
-  if (water < 4) dietScore += 2;
+  // Sleep score (0-15)
+  let sleepScore = 0;
+  const sleep = parseFloat(data.sleepDuration) || 7;
+  if (sleep < 5) sleepScore = 15;
+  else if (sleep < 6) sleepScore = 10;
+  else if (sleep > 9) sleepScore = 8;
+  else sleepScore = 0;
 
-  // Behavioral Risk
-  let behaviorScore = 0;
-  if (data.smokingStatus === 'regular') behaviorScore += 5;
-  else if (data.smokingStatus === 'occasional') behaviorScore += 3;
-  else if (data.smokingStatus === 'former') behaviorScore += 1;
-  if (data.alcoholConsumption === 'heavy') behaviorScore += 4;
-  else if (data.alcoholConsumption === 'moderate') behaviorScore += 2;
-  else if (data.alcoholConsumption === 'occasional') behaviorScore += 1;
+  // Smoking score (0-15)
+  const smokingScore = data.smokingHabit === 'yes' ? 15 : 0;
 
-  // Mental Health Risk
-  let mentalScore = 0;
-  if (data.stressLevel === 'very_high') mentalScore += 5;
-  else if (data.stressLevel === 'high') mentalScore += 3;
-  else if (data.stressLevel === 'moderate') mentalScore += 1;
-  const screen = parseInt(data.screenTime);
-  if (screen > 10) mentalScore += 3;
-  else if (screen > 6) mentalScore += 1;
+  // Family history score (0-10)
+  const familyScore = data.familyHistory === 'yes' ? 10 : 0;
 
-  // Family History Risk
-  let familyScore = 0;
-  if (data.familyDiabetes) familyScore += 2;
-  if (data.familyHypertension) familyScore += 2;
-  if (data.familyHeartDisease) familyScore += 2;
-  if (data.familyObesity) familyScore += 1;
-  if (data.familyCancer) familyScore += 1;
+  const totalRisk = bmiScore + ageScore + activityScore + sleepScore + smokingScore + familyScore;
+  const healthScore = Math.max(0, Math.min(100, 100 - totalRisk));
 
-  const categories = [
-    {
-      name: 'Obesity & BMI',
-      score: Math.min(bmiScore, 10),
-      level: categorize(bmiScore),
-      recommendations: bmiScore > 3
-        ? ['Maintain a balanced diet', 'Exercise at least 30 minutes daily', 'Consult a nutritionist']
-        : ['Keep maintaining your healthy weight'],
-    },
-    {
-      name: 'Cardiovascular',
-      score: Math.min(Math.round((behaviorScore + bmiScore + ageScore) / 3), 10),
-      level: categorize(Math.round((behaviorScore + bmiScore + ageScore) / 3)),
-      recommendations: behaviorScore > 3
-        ? ['Quit smoking if applicable', 'Limit alcohol intake', 'Regular cardiovascular checkups']
-        : ['Maintain your healthy habits'],
-    },
-    {
-      name: 'Diabetes',
-      score: Math.min(Math.round((dietScore + bmiScore + familyScore) / 3), 10),
-      level: categorize(Math.round((dietScore + bmiScore + familyScore) / 3)),
-      recommendations: dietScore > 3
-        ? ['Reduce sugar and refined carb intake', 'Monitor blood glucose levels', 'Increase fiber intake']
-        : ['Continue healthy eating habits'],
-    },
-    {
-      name: 'Lifestyle & Activity',
-      score: Math.min(lifestyleScore, 10),
-      level: categorize(lifestyleScore),
-      recommendations: lifestyleScore > 3
-        ? ['Increase daily physical activity', 'Aim for 7-8 hours of sleep', 'Take regular breaks from sitting']
-        : ['Your activity level is good'],
-    },
-    {
-      name: 'Mental Wellness',
-      score: Math.min(mentalScore, 10),
-      level: categorize(mentalScore),
-      recommendations: mentalScore > 3
-        ? ['Practice meditation or mindfulness', 'Reduce screen time before bed', 'Seek professional support if needed']
-        : ['Your mental wellness indicators are positive'],
-    },
-    {
-      name: 'Genetic Predisposition',
-      score: Math.min(familyScore, 10),
-      level: categorize(familyScore),
-      recommendations: familyScore > 3
-        ? ['Get regular health screenings', 'Share family history with your doctor', 'Monitor relevant biomarkers']
-        : ['Low genetic risk, continue preventive measures'],
-    },
+  const riskLevel: 'Low' | 'Medium' | 'High' = healthScore >= 70 ? 'Low' : healthScore >= 40 ? 'Medium' : 'High';
+
+  // Predicted diseases
+  const predictedDiseases: string[] = [];
+  if (bmi >= 30) predictedDiseases.push('Obesity');
+  if (bmi >= 25 || data.activityLevel === 'low') predictedDiseases.push('Heart Disease');
+  if (bmi >= 25 && (data.familyHistory === 'yes' || age > 45)) predictedDiseases.push('Type 2 Diabetes');
+  if (data.smokingHabit === 'yes') predictedDiseases.push('Respiratory Disease');
+  if (sleep < 6 || data.activityLevel === 'low') predictedDiseases.push('Stress & Mental Health Issues');
+  if (bmi >= 25 && age > 40) predictedDiseases.push('Hypertension');
+  if (predictedDiseases.length === 0) predictedDiseases.push('No significant risk detected');
+
+  // Suggestions
+  const suggestions: string[] = [];
+  if (bmi >= 25) suggestions.push('Maintain a balanced diet and aim for a healthy BMI between 18.5-24.9');
+  if (data.activityLevel === 'low') suggestions.push('Increase physical activity to at least 30 minutes of moderate exercise daily');
+  if (sleep < 6) suggestions.push('Aim for 7-8 hours of quality sleep each night');
+  if (sleep > 9) suggestions.push('Oversleeping can indicate health issues — aim for 7-8 hours');
+  if (data.smokingHabit === 'yes') suggestions.push('Quit smoking — it significantly reduces heart and lung disease risk');
+  if (data.familyHistory === 'yes') suggestions.push('Schedule regular health screenings due to family history of diseases');
+  if (age > 45) suggestions.push('Get annual health checkups including blood pressure, sugar, and cholesterol');
+  if (suggestions.length === 0) suggestions.push('Keep maintaining your healthy lifestyle!', 'Stay hydrated and eat more fruits and vegetables');
+
+  const catLevel = (s: number): 'Low' | 'Medium' | 'High' => s <= 5 ? 'Low' : s <= 12 ? 'Medium' : 'High';
+
+  const categoryScores = [
+    { name: 'BMI & Obesity', score: bmiScore, level: catLevel(bmiScore) },
+    { name: 'Heart Health', score: Math.min(bmiScore + activityScore, 25), level: catLevel(Math.round((bmiScore + activityScore) / 2)) },
+    { name: 'Diabetes Risk', score: Math.min(bmiScore + familyScore + ageScore, 25), level: catLevel(Math.round((bmiScore + familyScore + ageScore) / 3)) },
+    { name: 'Lifestyle', score: activityScore + sleepScore, level: catLevel(Math.round((activityScore + sleepScore) / 2)) },
+    { name: 'Mental Wellness', score: sleepScore + activityScore, level: catLevel(Math.round((sleepScore + activityScore) / 2)) },
   ];
 
-  const totalScore = categories.reduce((sum, c) => sum + c.score, 0);
-  const avgScore = totalScore / categories.length;
-
   return {
-    overallRisk: categorize(avgScore),
-    overallScore: Math.round(avgScore * 10) / 10,
-    categories,
+    riskLevel,
+    healthScore,
+    predictedDiseases: [...new Set(predictedDiseases)],
+    suggestions,
+    bmi,
+    bmiCategory: bmiCategory(bmi),
+    categoryScores,
+    timestamp: new Date().toISOString(),
   };
 }

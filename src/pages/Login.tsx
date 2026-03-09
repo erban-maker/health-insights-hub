@@ -17,8 +17,7 @@ const Login = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const success = login(email, password);
-    if (success) {
+    if (login(email, password)) {
       toast({ title: 'Welcome back!', description: 'Login successful' });
       navigate('/dashboard');
     } else {
@@ -39,12 +38,12 @@ const Login = () => {
               <LogIn className="w-6 h-6 text-primary" />
             </div>
             <CardTitle className="font-display">Welcome Back</CardTitle>
-            <CardDescription>Login to continue your health assessment</CardDescription>
+            <CardDescription>Login to access your health dashboard</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-muted-foreground" /> Email Address</Label>
+                <Label htmlFor="email" className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-muted-foreground" /> Email</Label>
                 <Input id="email" type="email" placeholder="john@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
               </div>
               <div className="space-y-2">
@@ -56,14 +55,6 @@ const Login = () => {
                 Don't have an account? <Link to="/register" className="text-primary font-medium hover:underline">Register</Link>
               </p>
             </form>
-
-            {/* Security notice */}
-            <div className="mt-5 pt-4 border-t text-center">
-              <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
-                <Lock className="w-3 h-3" />
-                <span>Your data is stored securely and never shared</span>
-              </div>
-            </div>
           </CardContent>
         </Card>
       </div>
