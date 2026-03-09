@@ -27,8 +27,7 @@ const Register = () => {
       toast({ title: 'Error', description: 'Password must be at least 6 characters', variant: 'destructive' });
       return;
     }
-    const success = register(name, email, password);
-    if (success) {
+    if (register(name, email, password)) {
       toast({ title: 'Welcome!', description: 'Account created successfully' });
       navigate('/dashboard');
     } else {
@@ -36,8 +35,8 @@ const Register = () => {
     }
   };
 
-  const passwordStrength = password.length === 0 ? null : password.length < 6 ? 'Weak' : password.length < 10 ? 'Medium' : 'Strong';
-  const passwordColor = passwordStrength === 'Weak' ? 'text-destructive' : passwordStrength === 'Medium' ? 'text-warning' : 'text-success';
+  const pwStrength = password.length === 0 ? null : password.length < 6 ? 'Weak' : password.length < 10 ? 'Medium' : 'Strong';
+  const pwColor = pwStrength === 'Weak' ? 'text-destructive' : pwStrength === 'Medium' ? 'text-accent' : 'text-primary';
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -57,39 +56,28 @@ const Register = () => {
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="name" className="flex items-center gap-1.5"><User className="w-3.5 h-3.5 text-muted-foreground" /> Full Name</Label>
+                <Label htmlFor="name" className="flex items-center gap-1.5"><User className="w-3.5 h-3.5 text-muted-foreground" /> Name</Label>
                 <Input id="name" placeholder="John Doe" value={name} onChange={e => setName(e.target.value)} required />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email" className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-muted-foreground" /> Email Address</Label>
+                <Label htmlFor="email" className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-muted-foreground" /> Email</Label>
                 <Input id="email" type="email" placeholder="john@example.com" value={email} onChange={e => setEmail(e.target.value)} required />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password" className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-muted-foreground" /> Password</Label>
                 <Input id="password" type="password" placeholder="Min 6 characters" value={password} onChange={e => setPassword(e.target.value)} required />
-                {passwordStrength && <p className={`text-[11px] font-medium ${passwordColor}`}>Strength: {passwordStrength}</p>}
+                {pwStrength && <p className={`text-[11px] font-medium ${pwColor}`}>Strength: {pwStrength}</p>}
               </div>
               <div className="space-y-2">
                 <Label htmlFor="confirm" className="flex items-center gap-1.5"><Lock className="w-3.5 h-3.5 text-muted-foreground" /> Confirm Password</Label>
                 <Input id="confirm" type="password" placeholder="Repeat password" value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} required />
-                {confirmPassword && password !== confirmPassword && <p className="text-[11px] font-medium text-destructive">Passwords do not match</p>}
-                {confirmPassword && password === confirmPassword && password.length >= 6 && <p className="text-[11px] font-medium text-success flex items-center gap-1"><CheckCircle className="w-3 h-3" /> Passwords match</p>}
+                {confirmPassword && password !== confirmPassword && <p className="text-[11px] text-destructive">Passwords do not match</p>}
               </div>
               <Button type="submit" className="w-full" disabled={!name || !email || !password}>Register</Button>
               <p className="text-center text-sm text-muted-foreground">
                 Already have an account? <Link to="/login" className="text-primary font-medium hover:underline">Login</Link>
               </p>
             </form>
-
-            {/* What you'll get */}
-            <div className="mt-5 pt-4 border-t">
-              <p className="text-xs font-semibold text-muted-foreground mb-2">After registration you can:</p>
-              <ul className="space-y-1">
-                <li className="text-xs text-muted-foreground flex items-center gap-1.5"><CheckCircle className="w-3 h-3 text-primary" /> Complete 8 health assessment forms</li>
-                <li className="text-xs text-muted-foreground flex items-center gap-1.5"><CheckCircle className="w-3 h-3 text-primary" /> Get personalized disease risk analysis</li>
-                <li className="text-xs text-muted-foreground flex items-center gap-1.5"><CheckCircle className="w-3 h-3 text-primary" /> Receive preventive health recommendations</li>
-              </ul>
-            </div>
           </CardContent>
         </Card>
       </div>

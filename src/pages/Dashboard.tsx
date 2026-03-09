@@ -1,34 +1,18 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useFormData } from '@/contexts/FormContext';
+import { useFormData, PredictionResult } from '@/contexts/FormContext';
+import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
-import { Shield, LogOut } from 'lucide-react';
-import FormStepper from '@/components/FormStepper';
-import PersonalDetailsForm from '@/components/forms/PersonalDetailsForm';
-import PhysicalHealthForm from '@/components/forms/PhysicalHealthForm';
-import LifestyleHabitsForm from '@/components/forms/LifestyleHabitsForm';
-import DietaryPatternForm from '@/components/forms/DietaryPatternForm';
-import RiskBehaviorForm from '@/components/forms/RiskBehaviorForm';
-import StressMentalHealthForm from '@/components/forms/StressMentalHealthForm';
-import FamilyMedicalHistoryForm from '@/components/forms/FamilyMedicalHistoryForm';
-import ReviewConfirmation from '@/components/forms/ReviewConfirmation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Activity, Heart, TrendingUp, ArrowRight, Stethoscope, Clock } from 'lucide-react';
 import { useEffect } from 'react';
-import { Progress } from '@/components/ui/progress';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 
-const stepMeta = [
-  { number: 4, title: 'Basic Personal Details', subtitle: 'Form 4 of 12' },
-  { number: 5, title: 'Physical Health Details', subtitle: 'Form 5 of 12' },
-  { number: 6, title: 'Lifestyle Habits', subtitle: 'Form 6 of 12' },
-  { number: 7, title: 'Dietary Pattern', subtitle: 'Form 7 of 12' },
-  { number: 8, title: 'Risk Behavior', subtitle: 'Form 8 of 12' },
-  { number: 9, title: 'Stress & Mental Health', subtitle: 'Form 9 of 12' },
-  { number: 10, title: 'Family & Medical History', subtitle: 'Form 10 of 12' },
-  { number: 11, title: 'Review & Confirmation', subtitle: 'Form 11 of 12' },
-];
+const riskColors = { Low: 'hsl(152, 60%, 40%)', Medium: 'hsl(36, 90%, 55%)', High: 'hsl(0, 72%, 51%)' };
 
 const Dashboard = () => {
-  const { user, logout } = useAuth();
-  const { currentStep, setCurrentStep } = useFormData();
+  const { user } = useAuth();
+  const { predictions } = useFormData();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,73 +21,137 @@ const Dashboard = () => {
 
   if (!user) return null;
 
-  const next = () => setCurrentStep(currentStep + 1);
-  const back = () => setCurrentStep(currentStep - 1);
-  const goToStep = (step: number) => setCurrentStep(step);
-
-  const handleSubmit = () => {
-    navigate('/results');
-  };
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
-
-  const progressPercent = ((currentStep + 1) / stepMeta.length) * 100;
-  const meta = stepMeta[currentStep];
-
-  const steps = [
-    <PersonalDetailsForm key={0} onNext={next} />,
-    <PhysicalHealthForm key={1} onNext={next} onBack={back} />,
-    <LifestyleHabitsForm key={2} onNext={next} onBack={back} />,
-    <DietaryPatternForm key={3} onNext={next} onBack={back} />,
-    <RiskBehaviorForm key={4} onNext={next} onBack={back} />,
-    <StressMentalHealthForm key={5} onNext={next} onBack={back} />,
-    <FamilyMedicalHistoryForm key={6} onNext={next} onBack={back} />,
-    <ReviewConfirmation key={7} onSubmit={handleSubmit} onBack={back} onEdit={goToStep} />,
-  ];
+  const latest = predictions[0];
+  const trendData = [...predictions].reverse().map((p, i) => ({
+    name: `Test ${i + 1}`,
+    score: p.healthScore,
+  }));
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="border-b bg-card">
-        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Shield className="w-6 h-6 text-primary" />
-            <span className="font-display font-bold">HealthPredict</span>
+      <Navbar />
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+          <div>
+            <h1 className="text-3xl font-display font-bold">Health Dashboard</h1>
+            <p className="text-muted-foreground mt-1">Welcome back, {user.name}</p>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground">Hi, {user.name}</span>
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="gap-1.5">
-              <LogOut className="w-4 h-4" /> Logout
-            </Button>
-          </div>
-        </div>
-      </nav>
-
-      <div className="container mx-auto px-4 py-8 max-w-3xl">
-        {/* Page-like header with step number */}
-        <div className="mb-2">
-          <p className="text-xs font-semibold text-primary uppercase tracking-widest">{meta.subtitle}</p>
-          <h1 className="text-2xl font-display font-bold mt-1">{meta.title}</h1>
+          <Button onClick={() => navigate('/health-check')} className="gap-1.5">
+            <Stethoscope className="w-4 h-4" /> New Health Check
+          </Button>
         </div>
 
-        {/* Progress bar */}
-        <div className="mb-6">
-          <Progress value={progressPercent} className="h-2" />
-          <p className="text-xs text-muted-foreground mt-1.5 text-right">{Math.round(progressPercent)}% Complete</p>
-        </div>
+        {!latest ? (
+          <Card className="border-0 shadow-[var(--shadow-lg)]">
+            <CardContent className="py-16 text-center">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                <Activity className="w-8 h-8 text-primary" />
+              </div>
+              <h2 className="text-xl font-display font-bold mb-2">No Predictions Yet</h2>
+              <p className="text-muted-foreground mb-6">Take your first health check to see your dashboard come alive.</p>
+              <Button onClick={() => navigate('/health-check')} className="gap-1.5">
+                Start Health Check <ArrowRight className="w-4 h-4" />
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <>
+            {/* Summary Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <Card className="border-0 shadow-[var(--shadow-md)]">
+                <CardContent className="py-5">
+                  <p className="text-xs text-muted-foreground mb-1">Health Score</p>
+                  <p className="text-3xl font-display font-extrabold" style={{ color: riskColors[latest.riskLevel] }}>{latest.healthScore}</p>
+                  <p className="text-xs text-muted-foreground">/100</p>
+                </CardContent>
+              </Card>
+              <Card className="border-0 shadow-[var(--shadow-md)]">
+                <CardContent className="py-5">
+                  <p className="text-xs text-muted-foreground mb-1">Risk Level</p>
+                  <p className="text-2xl font-display font-bold" style={{ color: riskColors[latest.riskLevel] }}>{latest.riskLevel}</p>
+                </CardContent>
+              </Card>
+              <Card className="border-0 shadow-[var(--shadow-md)]">
+                <CardContent className="py-5">
+                  <p className="text-xs text-muted-foreground mb-1">BMI</p>
+                  <p className="text-2xl font-display font-bold">{latest.bmi}</p>
+                  <p className="text-xs text-muted-foreground">{latest.bmiCategory}</p>
+                </CardContent>
+              </Card>
+              <Card className="border-0 shadow-[var(--shadow-md)]">
+                <CardContent className="py-5">
+                  <p className="text-xs text-muted-foreground mb-1">Tests Taken</p>
+                  <p className="text-2xl font-display font-bold">{predictions.length}</p>
+                </CardContent>
+              </Card>
+            </div>
 
-        {/* Step navigation */}
-        <FormStepper currentStep={currentStep} onStepClick={goToStep} />
+            {/* Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {trendData.length > 1 && (
+                <Card className="border-0 shadow-[var(--shadow-md)]">
+                  <CardHeader><CardTitle className="font-display text-base">Health Score Trend</CardTitle></CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={250}>
+                      <LineChart data={trendData}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(195, 20%, 88%)" />
+                        <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                        <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
+                        <Tooltip />
+                        <Line type="monotone" dataKey="score" stroke="hsl(174, 62%, 38%)" strokeWidth={2} dot={{ r: 4 }} />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              )}
 
-        {/* Separator line */}
-        <div className="border-t border-border my-4" />
+              <Card className="border-0 shadow-[var(--shadow-md)]">
+                <CardHeader><CardTitle className="font-display text-base">Risk by Category</CardTitle></CardHeader>
+                <CardContent>
+                  <ResponsiveContainer width="100%" height={250}>
+                    <BarChart data={latest.categoryScores}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(195, 20%, 88%)" />
+                      <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+                      <YAxis domain={[0, 25]} tick={{ fontSize: 11 }} />
+                      <Tooltip />
+                      <Bar dataKey="score" radius={[6, 6, 0, 0]}>
+                        {latest.categoryScores.map((c, i) => (
+                          <Cell key={i} fill={riskColors[c.level]} />
+                        ))}
+                      </Bar>
+                    </BarChart>
+                  </ResponsiveContainer>
+                </CardContent>
+              </Card>
+            </div>
 
-        {/* Form content */}
-        <div key={currentStep} className="animate-scale-in">
-          {steps[currentStep]}
-        </div>
+            {/* Previous Results */}
+            <Card className="border-0 shadow-[var(--shadow-md)]">
+              <CardHeader><CardTitle className="font-display text-base">Previous Predictions</CardTitle></CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {predictions.map((p, i) => (
+                    <div key={i} className="flex items-center justify-between p-3 rounded-lg border">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: riskColors[p.riskLevel] }} />
+                        <div>
+                          <p className="text-sm font-medium">Score: {p.healthScore}/100 — {p.riskLevel} Risk</p>
+                          <p className="text-xs text-muted-foreground flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {new Date(p.timestamp).toLocaleDateString()} at {new Date(p.timestamp).toLocaleTimeString()}
+                          </p>
+                        </div>
+                      </div>
+                      <span className="text-xs font-medium px-2 py-1 rounded-full" style={{ backgroundColor: `${riskColors[p.riskLevel]}15`, color: riskColors[p.riskLevel] }}>
+                        BMI: {p.bmi}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
     </div>
   );

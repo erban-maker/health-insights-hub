@@ -1,57 +1,39 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 export interface FormData {
-  // Personal Details
   age: string;
   gender: string;
-  occupation: string;
-  location: string;
-  // Physical Health
   height: string;
   weight: string;
-  bmi: string;
-  // Lifestyle
-  exerciseFrequency: string;
   activityLevel: string;
   sleepDuration: string;
-  dailyRoutine: string;
-  // Dietary
-  mealsPerDay: string;
-  junkFoodFrequency: string;
-  fruitVegIntake: string;
-  waterIntake: string;
-  // Risk Behavior
-  smokingStatus: string;
-  alcoholConsumption: string;
-  // Stress & Mental Health
-  stressLevel: string;
-  screenTime: string;
-  // Family & Medical History
-  familyDiabetes: boolean;
-  familyHypertension: boolean;
-  familyHeartDisease: boolean;
-  familyObesity: boolean;
-  familyCancer: boolean;
-  existingConditions: string;
+  smokingHabit: string;
+  familyHistory: string;
+}
+
+export interface PredictionResult {
+  riskLevel: 'Low' | 'Medium' | 'High';
+  healthScore: number;
+  predictedDiseases: string[];
+  suggestions: string[];
+  bmi: number;
+  bmiCategory: string;
+  categoryScores: { name: string; score: number; level: 'Low' | 'Medium' | 'High' }[];
+  timestamp: string;
 }
 
 const defaultFormData: FormData = {
-  age: '', gender: '', occupation: '', location: '',
-  height: '', weight: '', bmi: '',
-  exerciseFrequency: '', activityLevel: '', sleepDuration: '', dailyRoutine: '',
-  mealsPerDay: '', junkFoodFrequency: '', fruitVegIntake: '', waterIntake: '',
-  smokingStatus: '', alcoholConsumption: '',
-  stressLevel: '', screenTime: '',
-  familyDiabetes: false, familyHypertension: false, familyHeartDisease: false,
-  familyObesity: false, familyCancer: false, existingConditions: '',
+  age: '', gender: '', height: '', weight: '',
+  activityLevel: '', sleepDuration: '',
+  smokingHabit: '', familyHistory: '',
 };
 
 interface FormContextType {
   formData: FormData;
   updateFormData: (data: Partial<FormData>) => void;
-  currentStep: number;
-  setCurrentStep: (step: number) => void;
   resetForm: () => void;
+  predictions: PredictionResult[];
+  addPrediction: (result: PredictionResult) => void;
 }
 
 const FormContext = createContext<FormContextType | null>(null);
@@ -64,19 +46,25 @@ export const useFormData = () => {
 
 export const FormProvider = ({ children }: { children: ReactNode }) => {
   const [formData, setFormData] = useState<FormData>(defaultFormData);
-  const [currentStep, setCurrentStep] = useState(0);
+  const [predictions, setPredictions] = useState<PredictionResult[]>(() => {
+    const stored = localStorage.getItem('health_predictions');
+    return stored ? JSON.parse(stored) : [];
+  });
 
   const updateFormData = (data: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...data }));
   };
 
-  const resetForm = () => {
-    setFormData(defaultFormData);
-    setCurrentStep(0);
+  const resetForm = () => setFormData(defaultFormData);
+
+  const addPrediction = (result: PredictionResult) => {
+    const updated = [result, ...predictions].slice(0, 10);
+    setPredictions(updated);
+    localStorage.setItem('health_predictions', JSON.stringify(updated));
   };
 
   return (
-    <FormContext.Provider value={{ formData, updateFormData, currentStep, setCurrentStep, resetForm }}>
+    <FormContext.Provider value={{ formData, updateFormData, resetForm, predictions, addPrediction }}>
       {children}
     </FormContext.Provider>
   );
