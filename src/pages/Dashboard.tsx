@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useFormData, PredictionResult } from '@/contexts/FormContext';
+import { useFormData } from '@/contexts/FormContext';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Activity, Heart, TrendingUp, ArrowRight, Stethoscope, Clock } from 'lucide-react';
+import { Activity, ArrowRight, Stethoscope, Clock } from 'lucide-react';
 import { useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
 
@@ -36,7 +36,7 @@ const Dashboard = () => {
             <h1 className="text-3xl font-display font-bold">Health Dashboard</h1>
             <p className="text-muted-foreground mt-1">Welcome back, {user.name}</p>
           </div>
-          <Button onClick={() => navigate('/health-check')} className="gap-1.5">
+          <Button onClick={() => navigate('/personal-details')} className="gap-1.5">
             <Stethoscope className="w-4 h-4" /> New Health Check
           </Button>
         </div>
@@ -49,14 +49,13 @@ const Dashboard = () => {
               </div>
               <h2 className="text-xl font-display font-bold mb-2">No Predictions Yet</h2>
               <p className="text-muted-foreground mb-6">Take your first health check to see your dashboard come alive.</p>
-              <Button onClick={() => navigate('/health-check')} className="gap-1.5">
+              <Button onClick={() => navigate('/personal-details')} className="gap-1.5">
                 Start Health Check <ArrowRight className="w-4 h-4" />
               </Button>
             </CardContent>
           </Card>
         ) : (
           <>
-            {/* Summary Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <Card className="border-0 shadow-[var(--shadow-md)]">
                 <CardContent className="py-5">
@@ -86,7 +85,6 @@ const Dashboard = () => {
               </Card>
             </div>
 
-            {/* Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               {trendData.length > 1 && (
                 <Card className="border-0 shadow-[var(--shadow-md)]">
@@ -125,7 +123,6 @@ const Dashboard = () => {
               </Card>
             </div>
 
-            {/* Previous Results */}
             <Card className="border-0 shadow-[var(--shadow-md)]">
               <CardHeader><CardTitle className="font-display text-base">Previous Predictions</CardTitle></CardHeader>
               <CardContent>

@@ -18,7 +18,7 @@ const Navbar = () => {
   const navLinks = user
     ? [
         { to: '/dashboard', label: 'Dashboard' },
-        { to: '/health-check', label: 'Health Check' },
+        { to: '/personal-details', label: 'Health Check' },
         { to: '/bmi-calculator', label: 'BMI Calculator' },
         { to: '/disease-info', label: 'Disease Info' },
         { to: '/health-tips', label: 'Health Tips' },

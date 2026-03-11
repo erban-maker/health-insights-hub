@@ -8,7 +8,11 @@ import { FormProvider } from "@/contexts/FormContext";
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import HealthCheck from "./pages/HealthCheck";
+import PersonalDetails from "./pages/PersonalDetails";
+import PhysicalHealth from "./pages/PhysicalHealth";
+import LifestyleHabits from "./pages/LifestyleHabits";
+import RiskFactors from "./pages/RiskFactors";
+import ReviewSubmit from "./pages/ReviewSubmit";
 import Results from "./pages/Results";
 import BMICalculator from "./pages/BMICalculator";
 import Dashboard from "./pages/Dashboard";
@@ -30,7 +34,11 @@ const App = () => (
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/health-check" element={<HealthCheck />} />
+              <Route path="/personal-details" element={<PersonalDetails />} />
+              <Route path="/physical-health" element={<PhysicalHealth />} />
+              <Route path="/lifestyle-habits" element={<LifestyleHabits />} />
+              <Route path="/risk-factors" element={<RiskFactors />} />
+              <Route path="/review" element={<ReviewSubmit />} />
               <Route path="/results" element={<Results />} />
               <Route path="/bmi-calculator" element={<BMICalculator />} />
               <Route path="/dashboard" element={<Dashboard />} />

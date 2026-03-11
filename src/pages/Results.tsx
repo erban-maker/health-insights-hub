@@ -4,9 +4,9 @@ import { useFormData } from '@/contexts/FormContext';
 import Navbar from '@/components/Navbar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { RotateCcw, ArrowRight, AlertCircle, CheckCircle, Info, TrendingUp, Heart, Activity, Brain } from 'lucide-react';
-import { useEffect, useMemo } from 'react';
-import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell, PieChart, Pie } from 'recharts';
+import { RotateCcw, ArrowRight, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { useEffect } from 'react';
+import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
 
 const riskColors = { Low: 'hsl(152, 60%, 40%)', Medium: 'hsl(36, 90%, 55%)', High: 'hsl(0, 72%, 51%)' };
 
@@ -28,7 +28,7 @@ const Results = () => {
         <div className="container mx-auto px-4 py-20 text-center">
           <h2 className="text-xl font-display font-bold mb-4">No Results Yet</h2>
           <p className="text-muted-foreground mb-6">Complete the health check form to see your results.</p>
-          <Button onClick={() => navigate('/health-check')}>Take Health Check</Button>
+          <Button onClick={() => navigate('/personal-details')}>Take Health Check</Button>
         </div>
       </div>
     );
@@ -36,9 +36,7 @@ const Results = () => {
 
   const radarData = result.categoryScores.map(c => ({ name: c.name, score: c.score, fullMark: 25 }));
   const barData = result.categoryScores.map(c => ({ name: c.name, score: c.score, level: c.level }));
-
   const scoreColor = riskColors[result.riskLevel];
-  const scoreAngle = (result.healthScore / 100) * 360;
 
   return (
     <div className="min-h-screen bg-background">
@@ -46,11 +44,11 @@ const Results = () => {
       <div className="container mx-auto px-4 py-8 max-w-5xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-display font-bold">AI Risk Prediction Results</h1>
+            <h1 className="text-3xl font-display font-bold">Risk Prediction Results</h1>
             <p className="text-muted-foreground mt-1">Based on your lifestyle assessment</p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" size="sm" onClick={() => { resetForm(); navigate('/health-check'); }} className="gap-1.5">
+            <Button variant="outline" size="sm" onClick={() => { resetForm(); navigate('/personal-details'); }} className="gap-1.5">
               <RotateCcw className="w-4 h-4" /> Retake
             </Button>
             <Button size="sm" onClick={() => navigate('/dashboard')} className="gap-1.5">
