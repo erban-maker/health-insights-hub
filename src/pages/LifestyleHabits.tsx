@@ -99,7 +99,7 @@ const LifestyleHabits = () => {
                 <ArrowLeft className="w-4 h-4" /> Back
               </Button>
               <Button onClick={handleNext} className="gap-1.5">
-                Next: Risk Factors <ArrowRight className="w-4 h-4" />
+                Next: Risk Behavior <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
           </CardContent>

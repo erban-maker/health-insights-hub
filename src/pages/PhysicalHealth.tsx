@@ -47,7 +47,7 @@ const PhysicalHealth = () => {
         </div>
 
         <div className="w-full bg-muted rounded-full h-2 mb-8">
-          <div className="bg-primary h-2 rounded-full transition-all" style={{ width: '40%' }} />
+          <div className="bg-primary h-2 rounded-full transition-all" style={{ width: '33%' }} />
         </div>
 
         <Card className="border-0 shadow-[var(--shadow-lg)]">

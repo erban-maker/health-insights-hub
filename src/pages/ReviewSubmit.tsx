@@ -117,7 +117,7 @@ const ReviewSubmit = () => {
         </div>
 
         <div className="flex justify-between">
-          <Button variant="outline" onClick={() => navigate('/risk-factors')} className="gap-1.5">
+          <Button variant="outline" onClick={() => navigate('/family-history')} className="gap-1.5">
             <ArrowLeft className="w-4 h-4" /> Back
           </Button>
           <Button onClick={handleSubmit} disabled={!isComplete} size="lg" className="gap-1.5 font-semibold">
