@@ -42,7 +42,7 @@ const PersonalDetails = () => {
             <User className="w-7 h-7 text-primary" />
           </div>
           <h1 className="text-3xl font-display font-bold">Personal Details</h1>
-          <p className="text-muted-foreground mt-2">Step 1 of 5 — Basic information for demographic-based risk analysis</p>
+          <p className="text-muted-foreground mt-2">Step 1 of 6 — Basic information for demographic-based risk analysis</p>
         </div>
 
         {/* Progress */}
