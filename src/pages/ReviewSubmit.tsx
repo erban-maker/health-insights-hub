@@ -84,7 +84,7 @@ const ReviewSubmit = () => {
             <ClipboardCheck className="w-7 h-7 text-primary" />
           </div>
           <h1 className="text-3xl font-display font-bold">Review & Submit</h1>
-          <p className="text-muted-foreground mt-2">Step 5 of 5 — Verify your data before generating the prediction</p>
+          <p className="text-muted-foreground mt-2">Step 6 of 6 — Verify your data before generating the prediction</p>
         </div>
 
         <div className="w-full bg-muted rounded-full h-2 mb-8">
