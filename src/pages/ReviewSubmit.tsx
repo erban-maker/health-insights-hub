@@ -58,11 +58,19 @@ const ReviewSubmit = () => {
       ],
     },
     {
-      title: 'Risk Factors',
-      editPath: '/risk-factors',
+      title: 'Risk Behavior',
+      editPath: '/risk-behavior',
       fields: [
         { label: 'Smoking', value: formData.smokingHabit ? formData.smokingHabit.charAt(0).toUpperCase() + formData.smokingHabit.slice(1) : '—' },
+        { label: 'Alcohol', value: formData.alcoholConsumption ? formData.alcoholConsumption.charAt(0).toUpperCase() + formData.alcoholConsumption.slice(1) : '—' },
+      ],
+    },
+    {
+      title: 'Family & Medical History',
+      editPath: '/family-history',
+      fields: [
         { label: 'Family History', value: formData.familyHistory ? formData.familyHistory.charAt(0).toUpperCase() + formData.familyHistory.slice(1) : '—' },
+        { label: 'Existing Conditions', value: formData.existingConditions ? formData.existingConditions.charAt(0).toUpperCase() + formData.existingConditions.slice(1).replace('_', ' ') : '—' },
       ],
     },
   ];
