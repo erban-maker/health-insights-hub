@@ -110,7 +110,7 @@ const RiskBehavior = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
 

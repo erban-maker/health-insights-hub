@@ -108,7 +108,7 @@ const PhysicalHealth = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
 

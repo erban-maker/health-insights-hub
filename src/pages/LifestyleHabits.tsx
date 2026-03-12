@@ -104,7 +104,7 @@ const LifestyleHabits = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
 

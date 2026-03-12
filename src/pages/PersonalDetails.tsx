@@ -96,7 +96,7 @@ const PersonalDetails = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
 

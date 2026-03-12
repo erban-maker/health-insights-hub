@@ -103,7 +103,7 @@ const DiseaseInfo = () => {
           ))}
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

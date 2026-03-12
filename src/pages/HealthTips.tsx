@@ -113,7 +113,7 @@ const HealthTips = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
 

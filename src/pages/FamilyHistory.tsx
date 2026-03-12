@@ -110,7 +110,7 @@ const FamilyHistory = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
 
