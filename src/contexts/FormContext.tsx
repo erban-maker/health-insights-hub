@@ -8,7 +8,9 @@ export interface FormData {
   activityLevel: string;
   sleepDuration: string;
   smokingHabit: string;
+  alcoholConsumption: string;
   familyHistory: string;
+  existingConditions: string;
 }
 
 export interface PredictionResult {
