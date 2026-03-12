@@ -40,7 +40,7 @@ const LifestyleHabits = () => {
             <Activity className="w-7 h-7 text-primary" />
           </div>
           <h1 className="text-3xl font-display font-bold">Lifestyle Habits</h1>
-          <p className="text-muted-foreground mt-2">Step 3 of 5 — Exercise and sleep patterns</p>
+          <p className="text-muted-foreground mt-2">Step 3 of 6 — Exercise and sleep patterns</p>
         </div>
 
         <div className="w-full bg-muted rounded-full h-2 mb-8">
