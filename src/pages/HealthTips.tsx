@@ -1,4 +1,4 @@
-import Navbar from '@/components/Navbar';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Apple, Dumbbell, Moon, Droplets, Heart, Brain, Cigarette, Clock } from 'lucide-react';
 
