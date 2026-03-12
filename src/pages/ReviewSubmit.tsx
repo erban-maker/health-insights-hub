@@ -23,7 +23,7 @@ const ReviewSubmit = () => {
     ? (parseFloat(formData.weight) / Math.pow(parseFloat(formData.height) / 100, 2)).toFixed(1)
     : '—';
 
-  const isComplete = formData.age && formData.gender && formData.height && formData.weight && formData.activityLevel && formData.sleepDuration && formData.smokingHabit && formData.familyHistory;
+  const isComplete = formData.age && formData.gender && formData.height && formData.weight && formData.activityLevel && formData.sleepDuration && formData.smokingHabit && formData.alcoholConsumption && formData.familyHistory && formData.existingConditions;
 
   const handleSubmit = () => {
     const result = calculateRisk(formData);
