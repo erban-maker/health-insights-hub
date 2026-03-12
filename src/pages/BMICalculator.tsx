@@ -101,7 +101,7 @@ const BMICalculator = () => {
           <p className="text-xs text-muted-foreground">BMI is a screening tool, not a diagnostic measure. It does not account for muscle mass, bone density, or body composition. Athletes may have a high BMI due to muscle weight.</p>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
