@@ -26,7 +26,7 @@ const LifestyleHabits = () => {
       toast({ title: 'Incomplete', description: 'Please fill in activity level and sleep hours', variant: 'destructive' });
       return;
     }
-    navigate('/risk-factors');
+    navigate('/risk-behavior');
   };
 
   if (!user) return null;
