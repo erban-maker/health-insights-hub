@@ -28,7 +28,7 @@ const Results = () => {
           <h2 className="text-xl font-display font-bold mb-4">No Results Yet</h2>
           <p className="text-muted-foreground mb-6">Complete the health check form to see your results.</p>
           <Button onClick={() => navigate('/personal-details')}>Take Health Check</Button>
-        </div>
+      </>
       </div>
     );
   }
