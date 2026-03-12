@@ -8,7 +8,9 @@ export interface FormData {
   activityLevel: string;
   sleepDuration: string;
   smokingHabit: string;
+  alcoholConsumption: string;
   familyHistory: string;
+  existingConditions: string;
 }
 
 export interface PredictionResult {
@@ -25,7 +27,8 @@ export interface PredictionResult {
 const defaultFormData: FormData = {
   age: '', gender: '', height: '', weight: '',
   activityLevel: '', sleepDuration: '',
-  smokingHabit: '', familyHistory: '',
+  smokingHabit: '', alcoholConsumption: '',
+  familyHistory: '', existingConditions: '',
 };
 
 interface FormContextType {

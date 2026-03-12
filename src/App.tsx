@@ -11,7 +11,8 @@ import Register from "./pages/Register";
 import PersonalDetails from "./pages/PersonalDetails";
 import PhysicalHealth from "./pages/PhysicalHealth";
 import LifestyleHabits from "./pages/LifestyleHabits";
-import RiskFactors from "./pages/RiskFactors";
+import RiskBehavior from "./pages/RiskBehavior";
+import FamilyHistory from "./pages/FamilyHistory";
 import ReviewSubmit from "./pages/ReviewSubmit";
 import Results from "./pages/Results";
 import BMICalculator from "./pages/BMICalculator";
@@ -37,7 +38,8 @@ const App = () => (
               <Route path="/personal-details" element={<PersonalDetails />} />
               <Route path="/physical-health" element={<PhysicalHealth />} />
               <Route path="/lifestyle-habits" element={<LifestyleHabits />} />
-              <Route path="/risk-factors" element={<RiskFactors />} />
+              <Route path="/risk-behavior" element={<RiskBehavior />} />
+              <Route path="/family-history" element={<FamilyHistory />} />
               <Route path="/review" element={<ReviewSubmit />} />
               <Route path="/results" element={<Results />} />
               <Route path="/bmi-calculator" element={<BMICalculator />} />

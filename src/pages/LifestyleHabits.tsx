@@ -26,7 +26,7 @@ const LifestyleHabits = () => {
       toast({ title: 'Incomplete', description: 'Please fill in activity level and sleep hours', variant: 'destructive' });
       return;
     }
-    navigate('/risk-factors');
+    navigate('/risk-behavior');
   };
 
   if (!user) return null;
@@ -40,11 +40,11 @@ const LifestyleHabits = () => {
             <Activity className="w-7 h-7 text-primary" />
           </div>
           <h1 className="text-3xl font-display font-bold">Lifestyle Habits</h1>
-          <p className="text-muted-foreground mt-2">Step 3 of 5 — Exercise and sleep patterns</p>
+          <p className="text-muted-foreground mt-2">Step 3 of 6 — Exercise and sleep patterns</p>
         </div>
 
         <div className="w-full bg-muted rounded-full h-2 mb-8">
-          <div className="bg-primary h-2 rounded-full transition-all" style={{ width: '60%' }} />
+          <div className="bg-primary h-2 rounded-full transition-all" style={{ width: '50%' }} />
         </div>
 
         <Card className="border-0 shadow-[var(--shadow-lg)]">
@@ -99,7 +99,7 @@ const LifestyleHabits = () => {
                 <ArrowLeft className="w-4 h-4" /> Back
               </Button>
               <Button onClick={handleNext} className="gap-1.5">
-                Next: Risk Factors <ArrowRight className="w-4 h-4" />
+                Next: Risk Behavior <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
           </CardContent>

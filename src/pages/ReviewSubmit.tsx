@@ -23,7 +23,7 @@ const ReviewSubmit = () => {
     ? (parseFloat(formData.weight) / Math.pow(parseFloat(formData.height) / 100, 2)).toFixed(1)
     : '—';
 
-  const isComplete = formData.age && formData.gender && formData.height && formData.weight && formData.activityLevel && formData.sleepDuration && formData.smokingHabit && formData.familyHistory;
+  const isComplete = formData.age && formData.gender && formData.height && formData.weight && formData.activityLevel && formData.sleepDuration && formData.smokingHabit && formData.alcoholConsumption && formData.familyHistory && formData.existingConditions;
 
   const handleSubmit = () => {
     const result = calculateRisk(formData);
@@ -58,11 +58,19 @@ const ReviewSubmit = () => {
       ],
     },
     {
-      title: 'Risk Factors',
-      editPath: '/risk-factors',
+      title: 'Risk Behavior',
+      editPath: '/risk-behavior',
       fields: [
         { label: 'Smoking', value: formData.smokingHabit ? formData.smokingHabit.charAt(0).toUpperCase() + formData.smokingHabit.slice(1) : '—' },
+        { label: 'Alcohol', value: formData.alcoholConsumption ? formData.alcoholConsumption.charAt(0).toUpperCase() + formData.alcoholConsumption.slice(1) : '—' },
+      ],
+    },
+    {
+      title: 'Family & Medical History',
+      editPath: '/family-history',
+      fields: [
         { label: 'Family History', value: formData.familyHistory ? formData.familyHistory.charAt(0).toUpperCase() + formData.familyHistory.slice(1) : '—' },
+        { label: 'Existing Conditions', value: formData.existingConditions ? formData.existingConditions.charAt(0).toUpperCase() + formData.existingConditions.slice(1).replace('_', ' ') : '—' },
       ],
     },
   ];
@@ -76,7 +84,7 @@ const ReviewSubmit = () => {
             <ClipboardCheck className="w-7 h-7 text-primary" />
           </div>
           <h1 className="text-3xl font-display font-bold">Review & Submit</h1>
-          <p className="text-muted-foreground mt-2">Step 5 of 5 — Verify your data before generating the prediction</p>
+          <p className="text-muted-foreground mt-2">Step 6 of 6 — Verify your data before generating the prediction</p>
         </div>
 
         <div className="w-full bg-muted rounded-full h-2 mb-8">
@@ -109,7 +117,7 @@ const ReviewSubmit = () => {
         </div>
 
         <div className="flex justify-between">
-          <Button variant="outline" onClick={() => navigate('/risk-factors')} className="gap-1.5">
+          <Button variant="outline" onClick={() => navigate('/family-history')} className="gap-1.5">
             <ArrowLeft className="w-4 h-4" /> Back
           </Button>
           <Button onClick={handleSubmit} disabled={!isComplete} size="lg" className="gap-1.5 font-semibold">

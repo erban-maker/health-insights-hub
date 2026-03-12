@@ -43,11 +43,11 @@ const PhysicalHealth = () => {
             <Ruler className="w-7 h-7 text-primary" />
           </div>
           <h1 className="text-3xl font-display font-bold">Physical Health</h1>
-          <p className="text-muted-foreground mt-2">Step 2 of 5 — Height & weight for BMI calculation</p>
+          <p className="text-muted-foreground mt-2">Step 2 of 6 — Height & weight for BMI calculation</p>
         </div>
 
         <div className="w-full bg-muted rounded-full h-2 mb-8">
-          <div className="bg-primary h-2 rounded-full transition-all" style={{ width: '40%' }} />
+          <div className="bg-primary h-2 rounded-full transition-all" style={{ width: '33%' }} />
         </div>
 
         <Card className="border-0 shadow-[var(--shadow-lg)]">
