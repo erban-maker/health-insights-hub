@@ -23,8 +23,7 @@ const Results = () => {
 
   if (!user || !result) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
+      <>
         <div className="container mx-auto px-4 py-20 text-center">
           <h2 className="text-xl font-display font-bold mb-4">No Results Yet</h2>
           <p className="text-muted-foreground mb-6">Complete the health check form to see your results.</p>
