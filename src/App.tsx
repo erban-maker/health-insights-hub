@@ -38,7 +38,8 @@ const App = () => (
               <Route path="/personal-details" element={<PersonalDetails />} />
               <Route path="/physical-health" element={<PhysicalHealth />} />
               <Route path="/lifestyle-habits" element={<LifestyleHabits />} />
-              <Route path="/risk-factors" element={<RiskFactors />} />
+              <Route path="/risk-behavior" element={<RiskBehavior />} />
+              <Route path="/family-history" element={<FamilyHistory />} />
               <Route path="/review" element={<ReviewSubmit />} />
               <Route path="/results" element={<Results />} />
               <Route path="/bmi-calculator" element={<BMICalculator />} />

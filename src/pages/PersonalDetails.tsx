@@ -47,7 +47,7 @@ const PersonalDetails = () => {
 
         {/* Progress */}
         <div className="w-full bg-muted rounded-full h-2 mb-8">
-          <div className="bg-primary h-2 rounded-full transition-all" style={{ width: '20%' }} />
+          <div className="bg-primary h-2 rounded-full transition-all" style={{ width: '16%' }} />
         </div>
 
         <Card className="border-0 shadow-[var(--shadow-lg)]">
