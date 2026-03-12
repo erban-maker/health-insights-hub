@@ -1,4 +1,4 @@
-import Navbar from '@/components/Navbar';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Apple, Dumbbell, Moon, Droplets, Heart, Brain, Cigarette, Clock } from 'lucide-react';
 
@@ -55,8 +55,7 @@ const tipSections = [
 
 const HealthTips = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <>
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="text-center mb-10">
           <h1 className="text-3xl font-display font-bold">Health Tips</h1>
@@ -114,7 +113,7 @@ const HealthTips = () => {
           </CardContent>
         </Card>
       </div>
-    </div>
+    </>
   );
 };
 
