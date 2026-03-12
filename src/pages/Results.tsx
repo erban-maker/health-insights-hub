@@ -174,8 +174,8 @@ const Results = () => {
             <p className="text-xs text-muted-foreground mt-0.5">This is a rule-based simulation tool for educational purposes. It does not replace professional medical diagnosis. Always consult a qualified healthcare provider.</p>
           </div>
         </div>
+      </div>
     </>
-    </div>
   );
 };
 
