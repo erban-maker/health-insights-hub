@@ -50,12 +50,7 @@ const AppSidebar = () => {
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>
-            <Link to="/dashboard" className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-primary" />
-              {!collapsed && <span className="font-display font-bold text-sm">HealthPredict</span>}
-            </Link>
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (
