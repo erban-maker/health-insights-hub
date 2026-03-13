@@ -48,6 +48,7 @@ const App = () => (
                 <Route path="/bmi-calculator" element={<BMICalculator />} />
                 <Route path="/disease-info" element={<DiseaseInfo />} />
                 <Route path="/health-tips" element={<HealthTips />} />
+                <Route path="/profile" element={<Profile />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>

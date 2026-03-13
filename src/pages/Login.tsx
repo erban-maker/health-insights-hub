@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Shield, LogIn, Lock, Mail } from 'lucide-react';
+import { LogIn, Lock, Mail } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 const Login = () => {

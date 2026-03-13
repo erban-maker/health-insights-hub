@@ -30,6 +30,7 @@ const navItems = [
   { title: 'BMI Calculator', url: '/bmi-calculator', icon: Calculator },
   { title: 'Disease Info', url: '/disease-info', icon: BookOpen },
   { title: 'Health Tips', url: '/health-tips', icon: Lightbulb },
+  { title: 'Profile', url: '/profile', icon: UserCircle },
 ];
 
 const AppSidebar = () => {
