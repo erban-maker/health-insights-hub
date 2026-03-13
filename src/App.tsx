@@ -19,6 +19,7 @@ import BMICalculator from "./pages/BMICalculator";
 import Dashboard from "./pages/Dashboard";
 import DiseaseInfo from "./pages/DiseaseInfo";
 import HealthTips from "./pages/HealthTips";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
