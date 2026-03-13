@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import {
-  Shield,
   LayoutDashboard,
   Stethoscope,
   Calculator,
@@ -22,6 +21,7 @@ import {
   Lightbulb,
   LogOut,
   User,
+  UserCircle,
 } from 'lucide-react';
 
 const navItems = [
@@ -30,6 +30,7 @@ const navItems = [
   { title: 'BMI Calculator', url: '/bmi-calculator', icon: Calculator },
   { title: 'Disease Info', url: '/disease-info', icon: BookOpen },
   { title: 'Health Tips', url: '/health-tips', icon: Lightbulb },
+  { title: 'Profile', url: '/profile', icon: UserCircle },
 ];
 
 const AppSidebar = () => {
@@ -50,12 +51,7 @@ const AppSidebar = () => {
     <Sidebar collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>
-            <Link to="/dashboard" className="flex items-center gap-2">
-              <Shield className="w-5 h-5 text-primary" />
-              {!collapsed && <span className="font-display font-bold text-sm">HealthPredict</span>}
-            </Link>
-          </SidebarGroupLabel>
+          <SidebarGroupLabel>Menu</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => (

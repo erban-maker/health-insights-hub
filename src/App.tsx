@@ -19,6 +19,7 @@ import BMICalculator from "./pages/BMICalculator";
 import Dashboard from "./pages/Dashboard";
 import DiseaseInfo from "./pages/DiseaseInfo";
 import HealthTips from "./pages/HealthTips";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ const App = () => (
                 <Route path="/bmi-calculator" element={<BMICalculator />} />
                 <Route path="/disease-info" element={<DiseaseInfo />} />
                 <Route path="/health-tips" element={<HealthTips />} />
+                <Route path="/profile" element={<Profile />} />
               </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
