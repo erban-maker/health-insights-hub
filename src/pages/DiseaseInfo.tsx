@@ -48,7 +48,7 @@ const diseases = [
   },
   {
     title: 'Respiratory Diseases (COPD & Asthma)',
-    icon: Lung,
+    icon: Wind,
     color: 'hsl(190, 55%, 45%)',
     description: 'Chronic respiratory diseases affect the airways and lungs. COPD (Chronic Obstructive Pulmonary Disease) is a progressive lung disease that makes breathing difficult, while asthma causes inflammation and narrowing of the airways. Both are strongly linked to lifestyle factors, particularly smoking and air pollution exposure.',
     causes: ['Smoking and tobacco use (primary cause of COPD)', 'Prolonged exposure to air pollution and dust', 'Occupational exposure to chemicals and fumes', 'Genetic factors (alpha-1 antitrypsin deficiency)', 'Childhood respiratory infections', 'Allergens — pollen, dust mites, pet dander', 'Indoor cooking with solid fuels in poorly ventilated areas'],
