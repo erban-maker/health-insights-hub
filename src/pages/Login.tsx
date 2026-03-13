@@ -28,10 +28,6 @@ const Login = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <div className="w-full max-w-md">
-        <div className="flex items-center gap-2 justify-center mb-8 text-foreground">
-          <Shield className="w-7 h-7 text-primary" />
-          <span className="text-lg font-display font-bold">HealthPredict</span>
-        </div>
         <Card className="border-0 shadow-[var(--shadow-lg)]">
           <CardHeader className="text-center">
             <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-2">
