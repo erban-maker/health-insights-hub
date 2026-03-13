@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Heart, Activity, Brain, Scale, AlertTriangle, CheckCircle, Lung, Droplets, Bone, Eye } from 'lucide-react';
+import { Heart, Activity, Brain, Scale, AlertTriangle, CheckCircle, Wind, Droplets, Bone, Eye } from 'lucide-react';
 
 const diseases = [
   {
