@@ -14,7 +14,6 @@ import {
 } from '@/components/ui/sidebar';
 import { Button } from '@/components/ui/button';
 import {
-  Shield,
   LayoutDashboard,
   Stethoscope,
   Calculator,
@@ -22,6 +21,7 @@ import {
   Lightbulb,
   LogOut,
   User,
+  UserCircle,
 } from 'lucide-react';
 
 const navItems = [
