@@ -5,6 +5,10 @@ interface User {
   email: string;
 }
 
+interface StoredUser extends User {
+  password: string;
+}
+
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => boolean;
@@ -23,12 +27,12 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(() => {
     const stored = localStorage.getItem('health_user');
-    return stored ? JSON.parse(stored) : null;
+    return stored ? (JSON.parse(stored) as User) : null;
   });
 
   const register = (name: string, email: string, password: string) => {
-    const users = JSON.parse(localStorage.getItem('health_users') || '[]');
-    if (users.find((u: any) => u.email === email)) return false;
+    const users = JSON.parse(localStorage.getItem('health_users') || '[]') as StoredUser[];
+    if (users.find((u) => u.email === email)) return false;
     users.push({ name, email, password });
     localStorage.setItem('health_users', JSON.stringify(users));
     const u = { name, email };
@@ -38,8 +42,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const login = (email: string, password: string) => {
-    const users = JSON.parse(localStorage.getItem('health_users') || '[]');
-    const found = users.find((u: any) => u.email === email && u.password === password);
+    const users = JSON.parse(localStorage.getItem('health_users') || '[]') as StoredUser[];
+    const found = users.find((u) => u.email === email && u.password === password);
     if (!found) return false;
     const u = { name: found.name, email: found.email };
     setUser(u);
