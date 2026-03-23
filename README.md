@@ -1,73 +1,140 @@
-# Welcome to your Lovable project
+# Health Insights Hub
 
-## Project info
+A comprehensive health risk assessment and insights web application built with React, TypeScript, and Node.js.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- **Health Risk Calculator**: Assess personal health risks based on various factors
+- **Interactive Forms**: User-friendly forms for collecting health data
+- **Data Visualization**: Charts and graphs for health insights
+- **Responsive Design**: Works on desktop and mobile devices
+- **Modern UI**: Built with shadcn/ui components and Tailwind CSS
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+### Frontend
+- **React 18** with TypeScript
+- **Vite** for build tooling
+- **shadcn/ui** component library
+- **Tailwind CSS** for styling
+- **React Router** for navigation
+- **React Hook Form** with Zod validation
+- **Recharts** for data visualization
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+### Backend
+- **Node.js** with Express
+- **MongoDB** with Mongoose ODM
+- **JWT** for authentication
+- **CORS** for cross-origin requests
 
-Changes made via Lovable will be committed automatically to this repo.
+## Getting Started
 
-**Use your preferred IDE**
+### Prerequisites
+- Node.js (v18 or higher)
+- MongoDB (local installation or cloud service like MongoDB Atlas)
+- npm or yarn package manager
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Installation
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+1. **Clone the repository**
+   ```bash
+   git clone <YOUR_GIT_URL>
+   cd health-insights-hub
+   ```
 
-Follow these steps:
+2. **Install frontend dependencies**
+   ```bash
+   npm install
+   ```
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+3. **Setup backend**
+   ```bash
+   cd code-backend
+   npm install
+   ```
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+4. **Environment Configuration**
 
-# Step 3: Install the necessary dependencies.
-npm i
+   **Frontend (.env):**
+   ```env
+   VITE_API_URL=http://localhost:5000/api
+   VITE_ENVIRONMENT=development
+   ```
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+   **Backend (code-backend/.env):**
+   ```env
+   MONGODB_URI=mongodb://localhost:27017/new-database
+   PORT=5000
+   JWT_SECRET=your-secure-jwt-secret-here
+   FRONTEND_URL=http://localhost:8080
+   ```
+
+5. **Start MongoDB**
+   Make sure MongoDB is running on your system.
+
+6. **Start the development servers**
+
+   **Terminal 1 - Backend:**
+   ```bash
+   cd code-backend
+   npm run dev
+   ```
+
+   **Terminal 2 - Frontend:**
+   ```bash
+   npm run dev
+   ```
+
+7. **Open your browser**
+   - Frontend: http://localhost:8080
+   - Backend API: http://localhost:5000
+
+## Project Structure
+
+```
+health-insights-hub/
+├── src/                    # Frontend source code
+│   ├── components/         # Reusable UI components
+│   ├── pages/             # Application pages/routes
+│   ├── contexts/          # React contexts for state management
+│   ├── hooks/             # Custom React hooks
+│   ├── lib/               # Utilities and business logic
+│   └── test/              # Test files
+├── code-backend/          # Backend API server
+│   ├── config/            # Database configuration
+│   ├── models/            # MongoDB schemas
+│   ├── routes/            # API routes
+│   └── server.js          # Express server entry point
+├── public/                # Static assets
+└── package.json           # Frontend dependencies
 ```
 
-**Edit a file directly in GitHub**
+## Available Scripts
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Frontend
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run test` - Run tests
 
-**Use GitHub Codespaces**
+### Backend
+- `npm run dev` - Start development server with nodemon
+- `npm start` - Start production server
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## API Endpoints
 
-## What technologies are used for this project?
+### Users
+- `GET /api/users` - Get all users
+- `POST /api/users` - Create a new user
 
-This project is built with:
+## Contributing
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-## How can I deploy this project?
+## License
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This project is licensed under the MIT License.
