@@ -4,7 +4,7 @@ import { useFormData } from '@/contexts/FormContext';
 
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { RotateCcw, ArrowRight, AlertCircle, CheckCircle, Info } from 'lucide-react';
+import { RotateCcw, ArrowRight, AlertCircle, CheckCircle, Info, Download } from 'lucide-react';
 import { useEffect } from 'react';
 import { RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from 'recharts';
 
@@ -36,6 +36,7 @@ const Results = () => {
   const radarData = result.categoryScores.map(c => ({ name: c.name, score: c.score, fullMark: 25 }));
   const barData = result.categoryScores.map(c => ({ name: c.name, score: c.score, level: c.level }));
   const scoreColor = riskColors[result.riskLevel];
+  const handleExportPdf = () => window.print();
 
   return (
     <>
@@ -48,6 +49,9 @@ const Results = () => {
           <div className="flex gap-2">
             <Button variant="outline" size="sm" onClick={() => { resetForm(); navigate('/personal-details'); }} className="gap-1.5">
               <RotateCcw className="w-4 h-4" /> Retake
+            </Button>
+            <Button variant="outline" size="sm" onClick={handleExportPdf} className="gap-1.5">
+              <Download className="w-4 h-4" /> Export PDF
             </Button>
             <Button size="sm" onClick={() => navigate('/dashboard')} className="gap-1.5">
               Dashboard <ArrowRight className="w-4 h-4" />

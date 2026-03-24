@@ -16,14 +16,13 @@ const Dashboard = () => {
   const { user } = useAuth();
   const { predictions, predictionsLoading, predictionsError, reloadPredictions } = useFormData();
   const navigate = useNavigate();
-  const [timeFilter, setTimeFilter] = useState<'all' | '30' | '7'>('all');
+  const [timeFilter, setTimeFilter] = useState<'7' | '30' | '90'>('30');
 
   useEffect(() => {
     if (!user) navigate('/login');
   }, [user, navigate]);
 
   const filteredPredictions = useMemo(() => {
-    if (timeFilter === 'all') return predictions;
     const days = Number(timeFilter);
     const cutoff = Date.now() - days * 24 * 60 * 60 * 1000;
     return predictions.filter((p) => new Date(p.timestamp).getTime() >= cutoff);
@@ -54,6 +53,7 @@ const Dashboard = () => {
   const totalPredictions = riskDistribution.reduce((sum, item) => sum + item.value, 0);
 
   const scoreDelta = latest && previous ? latest.healthScore - previous.healthScore : null;
+  const bmiDelta = latest && previous ? Number((latest.bmi - previous.bmi).toFixed(1)) : null;
 
   if (!user) return null;
 
@@ -103,14 +103,14 @@ const Dashboard = () => {
             <p className="text-muted-foreground mt-1">Welcome back, {user.name}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Select value={timeFilter} onValueChange={(value) => setTimeFilter(value as 'all' | '30' | '7')}>
+            <Select value={timeFilter} onValueChange={(value) => setTimeFilter(value as '7' | '30' | '90')}>
               <SelectTrigger className="w-[170px]">
                 <SelectValue placeholder="Filter range" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All time</SelectItem>
-                <SelectItem value="30">Last 30 days</SelectItem>
                 <SelectItem value="7">Last 7 days</SelectItem>
+                <SelectItem value="30">Last 30 days</SelectItem>
+                <SelectItem value="90">Last 90 days</SelectItem>
               </SelectContent>
             </Select>
             <Button onClick={() => navigate('/personal-details')} className="gap-1.5">
@@ -225,6 +225,9 @@ const Dashboard = () => {
                       </p>
                       <p className="text-xs text-muted-foreground">
                         Latest: {latest.healthScore}/100 ({latest.riskLevel})
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        BMI {bmiDelta !== null && bmiDelta > 0 ? `increased by +${bmiDelta}` : bmiDelta !== null && bmiDelta < 0 ? `decreased by ${bmiDelta}` : 'unchanged'} (Prev: {previous?.bmi}, Latest: {latest.bmi})
                       </p>
                     </>
                   )}

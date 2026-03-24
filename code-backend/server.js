@@ -30,8 +30,9 @@ app.use(morgan(env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
 app.use(express.json());
 
-// Connect MongoDB
-connectDB();
+if (env.NODE_ENV !== 'test') {
+  connectDB();
+}
 
 // Simple route
 app.get('/', (req, res) => {
@@ -80,4 +81,11 @@ const startServer = (port, retriesLeft = 10) => {
   });
 };
 
-startServer(PORT);
+if (require.main === module) {
+  startServer(PORT);
+}
+
+module.exports = {
+  app,
+  startServer,
+};
