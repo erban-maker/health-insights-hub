@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { API_BASE_URL, getAuthHeaders, getAuthToken } from '@/lib/api';
 
@@ -38,6 +38,9 @@ interface FormContextType {
   updateFormData: (data: Partial<FormData>) => void;
   resetForm: () => void;
   predictions: PredictionResult[];
+  predictionsLoading: boolean;
+  predictionsError: string | null;
+  reloadPredictions: () => Promise<void>;
   addPrediction: (result: PredictionResult) => Promise<boolean>;
 }
 
@@ -53,45 +56,49 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const [formData, setFormData] = useState<FormData>(defaultFormData);
   const [predictions, setPredictions] = useState<PredictionResult[]>([]);
+  const [predictionsLoading, setPredictionsLoading] = useState(false);
+  const [predictionsError, setPredictionsError] = useState<string | null>(null);
 
   useEffect(() => {
     localStorage.removeItem('health_predictions');
   }, []);
 
-  useEffect(() => {
+  const reloadPredictions = useCallback(async () => {
     const token = getAuthToken();
     if (!user || !token) {
       setPredictions([]);
+      setPredictionsError(null);
+      setPredictionsLoading(false);
       return;
     }
 
-    let isCancelled = false;
+    setPredictionsLoading(true);
+    setPredictionsError(null);
 
-    const loadPredictions = async () => {
-      try {
-        const response = await fetch(`${API_BASE_URL}/predictions`, {
-          headers: getAuthHeaders(),
-        });
+    try {
+      const response = await fetch(`${API_BASE_URL}/predictions`, {
+        headers: getAuthHeaders(),
+      });
 
-        if (!response.ok) {
-          if (!isCancelled) setPredictions([]);
-          return;
-        }
-
-        const data = (await response.json()) as PredictionResult[];
-        if (!isCancelled) {
-          setPredictions(Array.isArray(data) ? data : []);
-        }
-      } catch {
-        if (!isCancelled) setPredictions([]);
+      if (!response.ok) {
+        setPredictions([]);
+        setPredictionsError('Failed to load your prediction history.');
+        return;
       }
-    };
 
-    loadPredictions();
-    return () => {
-      isCancelled = true;
-    };
+      const data = (await response.json()) as PredictionResult[];
+      setPredictions(Array.isArray(data) ? data : []);
+    } catch {
+      setPredictions([]);
+      setPredictionsError('Network error while loading predictions.');
+    } finally {
+      setPredictionsLoading(false);
+    }
   }, [user]);
+
+  useEffect(() => {
+    reloadPredictions();
+  }, [reloadPredictions]);
 
   const updateFormData = (data: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...data }));
@@ -117,6 +124,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
 
       const saved = (await response.json()) as PredictionResult;
       setPredictions((prev) => [saved, ...prev].slice(0, 50));
+      setPredictionsError(null);
       return true;
     } catch {
       return false;
@@ -124,7 +132,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <FormContext.Provider value={{ formData, updateFormData, resetForm, predictions, addPrediction }}>
+    <FormContext.Provider value={{ formData, updateFormData, resetForm, predictions, predictionsLoading, predictionsError, reloadPredictions, addPrediction }}>
       {children}
     </FormContext.Provider>
   );
