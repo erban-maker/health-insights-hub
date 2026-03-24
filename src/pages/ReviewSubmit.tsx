@@ -7,11 +7,13 @@ import { calculateRisk } from '@/lib/riskCalculator';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ClipboardCheck, ArrowLeft, Edit, Send } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 const ReviewSubmit = () => {
   const { user } = useAuth();
   const { formData, addPrediction } = useFormData();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!user) navigate('/login');
@@ -25,9 +27,19 @@ const ReviewSubmit = () => {
 
   const isComplete = formData.age && formData.gender && formData.height && formData.weight && formData.activityLevel && formData.sleepDuration && formData.smokingHabit && formData.alcoholConsumption && formData.familyHistory && formData.existingConditions;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const result = calculateRisk(formData);
-    addPrediction(result);
+    const saved = await addPrediction(result);
+
+    if (!saved) {
+      toast({
+        title: 'Save failed',
+        description: 'Could not save prediction to database. Please try again.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     navigate('/results');
   };
 
