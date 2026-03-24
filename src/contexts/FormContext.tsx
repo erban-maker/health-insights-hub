@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useEffect, useMemo, useState, ReactNode } from 'react';
+import { useAuth } from './AuthContext';
 
 export interface FormData {
   age: string;
@@ -48,11 +49,24 @@ export const useFormData = () => {
 };
 
 export const FormProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuth();
   const [formData, setFormData] = useState<FormData>(defaultFormData);
-  const [predictions, setPredictions] = useState<PredictionResult[]>(() => {
-    const stored = localStorage.getItem('health_predictions');
-    return stored ? JSON.parse(stored) : [];
-  });
+
+  useEffect(() => {
+    localStorage.removeItem('health_predictions');
+  }, []);
+
+  const predictionStorageKey = useMemo(() => {
+    const identity = user?.email?.toLowerCase() || 'guest';
+    return `health_predictions:${identity}`;
+  }, [user?.email]);
+
+  const [predictions, setPredictions] = useState<PredictionResult[]>([]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem(predictionStorageKey);
+    setPredictions(stored ? (JSON.parse(stored) as PredictionResult[]) : []);
+  }, [predictionStorageKey]);
 
   const updateFormData = (data: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...data }));
@@ -61,9 +75,11 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
   const resetForm = () => setFormData(defaultFormData);
 
   const addPrediction = (result: PredictionResult) => {
-    const updated = [result, ...predictions].slice(0, 10);
-    setPredictions(updated);
-    localStorage.setItem('health_predictions', JSON.stringify(updated));
+    setPredictions((prev) => {
+      const updated = [result, ...prev].slice(0, 10);
+      localStorage.setItem(predictionStorageKey, JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (
