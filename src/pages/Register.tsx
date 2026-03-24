@@ -17,7 +17,7 @@ const Register = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast({ title: 'Error', description: 'Passwords do not match', variant: 'destructive' });
@@ -27,7 +27,7 @@ const Register = () => {
       toast({ title: 'Error', description: 'Password must be at least 6 characters', variant: 'destructive' });
       return;
     }
-    if (register(name, email, password)) {
+    if (await register(name, email, password)) {
       toast({ title: 'Welcome!', description: 'Account created successfully' });
       navigate('/dashboard');
     } else {

@@ -5,14 +5,10 @@ interface User {
   email: string;
 }
 
-interface StoredUser extends User {
-  password: string;
-}
-
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => boolean;
-  register: (name: string, email: string, password: string) => boolean;
+  login: (email: string, password: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string) => Promise<boolean>;
   logout: () => void;
 }
 
@@ -30,30 +26,54 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return stored ? (JSON.parse(stored) as User) : null;
   });
 
-  const register = (name: string, email: string, password: string) => {
-    const users = JSON.parse(localStorage.getItem('health_users') || '[]') as StoredUser[];
-    if (users.find((u) => u.email === email)) return false;
-    users.push({ name, email, password });
-    localStorage.setItem('health_users', JSON.stringify(users));
-    const u = { name, email };
-    setUser(u);
-    localStorage.setItem('health_user', JSON.stringify(u));
-    return true;
+  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
+  const register = async (name: string, email: string, password: string) => {
+    try {
+      const response = await fetch(`${apiBase}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (!response.ok) return false;
+
+      const data = (await response.json()) as { user: User; token: string };
+      setUser(data.user);
+      localStorage.setItem('health_user', JSON.stringify(data.user));
+      localStorage.setItem('health_token', data.token);
+      localStorage.removeItem('health_users');
+      return true;
+    } catch {
+      return false;
+    }
   };
 
-  const login = (email: string, password: string) => {
-    const users = JSON.parse(localStorage.getItem('health_users') || '[]') as StoredUser[];
-    const found = users.find((u) => u.email === email && u.password === password);
-    if (!found) return false;
-    const u = { name: found.name, email: found.email };
-    setUser(u);
-    localStorage.setItem('health_user', JSON.stringify(u));
-    return true;
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await fetch(`${apiBase}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) return false;
+
+      const data = (await response.json()) as { user: User; token: string };
+      setUser(data.user);
+      localStorage.setItem('health_user', JSON.stringify(data.user));
+      localStorage.setItem('health_token', data.token);
+      localStorage.removeItem('health_users');
+      return true;
+    } catch {
+      return false;
+    }
   };
 
   const logout = () => {
     setUser(null);
     localStorage.removeItem('health_user');
+    localStorage.removeItem('health_token');
   };
 
   return (

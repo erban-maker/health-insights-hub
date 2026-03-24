@@ -57,6 +57,7 @@ app.get('/health', (req, res) => {
 
 // Example route group
 app.use('/api/users', require('./routes/users'));
+app.use('/api/auth', require('./routes/auth'));
 
 app.use(notFoundHandler);
 app.use(errorHandler);
