@@ -63,7 +63,7 @@ A comprehensive health risk assessment and insights web application built with R
 
    **Backend (code-backend/.env):**
    ```env
-   MONGODB_URI=mongodb://localhost:27017/new-database
+   MONGODB_URI=mongodb://localhost:27017/health_insights_hub
    PORT=5000
    JWT_SECRET=your-secure-jwt-secret-here
    FRONTEND_URL=http://localhost:8080
