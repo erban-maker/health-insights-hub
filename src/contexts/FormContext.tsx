@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
+import { API_BASE_URL, getAuthHeaders, getAuthToken } from '@/lib/api';
 
 export interface FormData {
   age: string;
@@ -52,14 +53,13 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
   const [formData, setFormData] = useState<FormData>(defaultFormData);
   const [predictions, setPredictions] = useState<PredictionResult[]>([]);
-  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
   useEffect(() => {
     localStorage.removeItem('health_predictions');
   }, []);
 
   useEffect(() => {
-    const token = localStorage.getItem('health_token');
+    const token = getAuthToken();
     if (!user || !token) {
       setPredictions([]);
       return;
@@ -69,10 +69,8 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
 
     const loadPredictions = async () => {
       try {
-        const response = await fetch(`${apiBase}/predictions`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+        const response = await fetch(`${API_BASE_URL}/predictions`, {
+          headers: getAuthHeaders(),
         });
 
         if (!response.ok) {
@@ -93,7 +91,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     return () => {
       isCancelled = true;
     };
-  }, [apiBase, user]);
+  }, [user]);
 
   const updateFormData = (data: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...data }));
@@ -102,15 +100,15 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
   const resetForm = () => setFormData(defaultFormData);
 
   const addPrediction = async (result: PredictionResult) => {
-    const token = localStorage.getItem('health_token');
+    const token = getAuthToken();
     if (!user || !token) return false;
 
     try {
-      const response = await fetch(`${apiBase}/predictions`, {
+      const response = await fetch(`${API_BASE_URL}/predictions`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          ...getAuthHeaders(),
         },
         body: JSON.stringify({ formData, result }),
       });

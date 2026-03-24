@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
+import { API_BASE_URL } from '@/lib/api';
 
 interface User {
   name: string;
@@ -26,11 +27,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return stored ? (JSON.parse(stored) as User) : null;
   });
 
-  const apiBase = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
-
   const register = async (name: string, email: string, password: string) => {
     try {
-      const response = await fetch(`${apiBase}/auth/register`, {
+      const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, password }),
@@ -51,7 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = async (email: string, password: string) => {
     try {
-      const response = await fetch(`${apiBase}/auth/login`, {
+      const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
