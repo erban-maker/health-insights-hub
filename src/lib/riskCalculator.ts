@@ -77,14 +77,25 @@ export function calculateRisk(data: FormData): PredictionResult {
   if (age > 45) suggestions.push('Get annual health checkups including blood pressure, sugar, and cholesterol');
   if (suggestions.length === 0) suggestions.push('Keep maintaining your healthy lifestyle!', 'Stay hydrated and eat more fruits and vegetables');
 
-  const catLevel = (s: number): 'Low' | 'Medium' | 'High' => s <= 5 ? 'Low' : s <= 12 ? 'Medium' : 'High';
+  const clampCategoryScore = (value: number): number => Math.max(0, Math.min(25, Math.round(value)));
+  const catLevel = (score: number): 'Low' | 'Medium' | 'High' => {
+    if (score <= 8) return 'Low';
+    if (score <= 16) return 'Medium';
+    return 'High';
+  };
+
+  const bmiCategoryScore = clampCategoryScore(bmiScore);
+  const heartCategoryScore = clampCategoryScore(bmiScore + activityScore);
+  const diabetesCategoryScore = clampCategoryScore(bmiScore + familyScore + ageScore);
+  const lifestyleCategoryScore = clampCategoryScore(activityScore + sleepScore);
+  const mentalWellnessCategoryScore = clampCategoryScore(sleepScore + activityScore);
 
   const categoryScores = [
-    { name: 'BMI & Obesity', score: bmiScore, level: catLevel(bmiScore) },
-    { name: 'Heart Health', score: Math.min(bmiScore + activityScore, 25), level: catLevel(Math.round((bmiScore + activityScore) / 2)) },
-    { name: 'Diabetes Risk', score: Math.min(bmiScore + familyScore + ageScore, 25), level: catLevel(Math.round((bmiScore + familyScore + ageScore) / 3)) },
-    { name: 'Lifestyle', score: activityScore + sleepScore, level: catLevel(Math.round((activityScore + sleepScore) / 2)) },
-    { name: 'Mental Wellness', score: sleepScore + activityScore, level: catLevel(Math.round((sleepScore + activityScore) / 2)) },
+    { name: 'BMI & Obesity', score: bmiCategoryScore, level: catLevel(bmiCategoryScore) },
+    { name: 'Heart Health', score: heartCategoryScore, level: catLevel(heartCategoryScore) },
+    { name: 'Diabetes Risk', score: diabetesCategoryScore, level: catLevel(diabetesCategoryScore) },
+    { name: 'Lifestyle', score: lifestyleCategoryScore, level: catLevel(lifestyleCategoryScore) },
+    { name: 'Mental Wellness', score: mentalWellnessCategoryScore, level: catLevel(mentalWellnessCategoryScore) },
   ];
 
   return {
