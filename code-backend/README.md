@@ -14,8 +14,10 @@ Node + Express + MongoDB backend scaffold
 ## Endpoints
 
 - `GET /` -> hello message
-- `GET /api/users` -> list users
-- `POST /api/users` -> create user
+- `POST /api/auth/register` -> create account
+- `POST /api/auth/login` -> login and receive JWT
+- `GET /api/predictions` -> fetch authenticated user's predictions
+- `POST /api/predictions` -> save authenticated user's prediction
 
 ## Notes
 

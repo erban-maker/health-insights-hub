@@ -2,6 +2,8 @@
 
 A comprehensive health risk assessment and insights web application built with React, TypeScript, and Node.js.
 
+Detailed evolving project documentation is maintained in `PROJECT_DOCUMENTATION.md`.
+
 ## Features
 
 - **Health Risk Calculator**: Assess personal health risks based on various factors
@@ -123,9 +125,13 @@ health-insights-hub/
 
 ## API Endpoints
 
-### Users
-- `GET /api/users` - Get all users
-- `POST /api/users` - Create a new user
+### Auth
+- `POST /api/auth/register` - Register a new user
+- `POST /api/auth/login` - Login and receive JWT
+
+### Predictions
+- `GET /api/predictions` - Fetch authenticated user's prediction history
+- `POST /api/predictions` - Save authenticated user's prediction
 
 ## Contributing
 
