@@ -94,10 +94,10 @@ The file organization reflects separation between frontend and backend concerns.
 
 Frontend file structure is organized by functional areas:
 
-- `src/pages/` contains page-level React components representing the multi-step form workflow (`PersonalDetails`, `PhysicalHealth`, `LifestyleHabits`, `RiskBehavior`, `FamilyHistory`) and output pages (`Results`, `Dashboard`). Each page handles its specific health assessment step.
+- `src/pages/` contains 14 page-level React components: `Login`, `Register`, `PersonalDetails`, `PhysicalHealth`, `LifestyleHabits`, `RiskBehavior`, `FamilyHistory`, `ReviewSubmit`, `Results`, `Dashboard`, `BMICalculator`, `DiseaseInfo`, `HealthTips`, and `Profile`. Together, these pages cover authentication, multi-step assessment input, review and submission, result interpretation, dashboard analytics, and informational utilities.
 - `src/components/` holds reusable UI components and layout wrappers directly under the folder: `AppLayout.tsx`, `AppSidebar.tsx`, `Navbar.tsx`. Also contains `components/ui/` subfolder with primitive components from shadcn/ui (`Button`, `Card`, `Input`, etc.).
-- `src/contexts/` holds React Context providers for global state: `AuthContext` for user authentication and `FormContext` for multi-step form data management.
-- `src/hooks/` contains custom React hooks such as `use-mobile.tsx` and `use-toast.ts` for managing state and side effects.
+- `src/contexts/` holds context providers and context-related type definitions for global state: `AuthContext` for user authentication, `FormContext` (provider), and `FormContext.types.ts` for form-context interfaces/defaults.
+- `src/hooks/` contains custom React hooks such as `use-mobile.tsx`, `use-toast.ts`, and `useFormData.ts` for reusable state and side-effect logic.
 - `src/lib/` contains utility functions including `riskCalculator.ts` (deterministic scoring logic) and `utils.ts` (helper functions).
 
 Backend file structure is organized by architectural layers:

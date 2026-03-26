@@ -11,6 +11,7 @@
 ### Core Product Status
 - Authentication is backend-based with JWT.
 - Predictions are stored in MongoDB and scoped per user.
+- Frontend includes 14 pages: Login, Register, PersonalDetails, PhysicalHealth, LifestyleHabits, RiskBehavior, FamilyHistory, ReviewSubmit, Results, Dashboard, BMICalculator, DiseaseInfo, HealthTips, and Profile.
 - Dashboard includes advanced visualizations:
   - Risk distribution donut chart
   - Health score radial gauge
