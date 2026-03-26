@@ -1,4 +1,4 @@
-# Health Insights Hub Documentation
+# Future Health Risk Assessment Using Lifestyle Analysis Documentation
 
 ## Section 1: Project Status and Recommended Next Steps
 

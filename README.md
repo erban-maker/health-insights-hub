@@ -1,4 +1,4 @@
-# Health Insights Hub
+# Future Health Risk Assessment Using Lifestyle Analysis
 
 A comprehensive health risk assessment and insights web application built with React, TypeScript, and Node.js.
 
