@@ -2,7 +2,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useFormData } from '@/contexts/FormContext';
+import { useFormData } from '@/contexts/useFormData';
 import { User, Mail, Activity, Calendar } from 'lucide-react';
 
 const Profile = () => {

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { useFormData } from '@/contexts/FormContext';
+import { useFormData } from '@/contexts/useFormData';
 
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';

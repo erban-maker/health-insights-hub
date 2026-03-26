@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useEffect, useState, ReactNode } from 'react';
+import { createContext, useCallback, useEffect, useState, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { API_BASE_URL, getAuthHeaders, getAuthToken } from '@/lib/api';
 
@@ -33,7 +33,7 @@ const defaultFormData: FormData = {
   familyHistory: '', existingConditions: '',
 };
 
-interface FormContextType {
+export interface FormContextType {
   formData: FormData;
   updateFormData: (data: Partial<FormData>) => void;
   resetForm: () => void;
@@ -44,13 +44,7 @@ interface FormContextType {
   addPrediction: (result: PredictionResult) => Promise<boolean>;
 }
 
-const FormContext = createContext<FormContextType | null>(null);
-
-export const useFormData = () => {
-  const ctx = useContext(FormContext);
-  if (!ctx) throw new Error('useFormData must be used within FormProvider');
-  return ctx;
-};
+export const FormContext = createContext<FormContextType | null>(null);
 
 export const FormProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
