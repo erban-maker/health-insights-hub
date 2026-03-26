@@ -75,6 +75,12 @@ vi.mock('@/contexts/FormContext', () => ({
   FormProvider: ({ children }: { children?: React.ReactNode }) => children,
 }));
 
+vi.mock('@/contexts/FormContext.types', () => ({
+  FormContext: {
+    Provider: ({ value, children }: { value: unknown; children?: React.ReactNode }) => children,
+  },
+}));
+
 vi.mock('@/hooks/useFormData', () => ({
   useFormData: () => ({
     formData: state.formData,

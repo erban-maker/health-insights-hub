@@ -1,50 +1,7 @@
-import { createContext, useCallback, useEffect, useState, ReactNode } from 'react';
+import { useCallback, useEffect, useState, ReactNode } from 'react';
 import { useAuth } from './AuthContext';
 import { API_BASE_URL, getAuthHeaders, getAuthToken } from '@/lib/api';
-
-export interface FormData {
-  age: string;
-  gender: string;
-  height: string;
-  weight: string;
-  activityLevel: string;
-  sleepDuration: string;
-  smokingHabit: string;
-  alcoholConsumption: string;
-  familyHistory: string;
-  existingConditions: string;
-}
-
-export interface PredictionResult {
-  riskLevel: 'Low' | 'Medium' | 'High';
-  healthScore: number;
-  predictedDiseases: string[];
-  suggestions: string[];
-  bmi: number;
-  bmiCategory: string;
-  categoryScores: { name: string; score: number; level: 'Low' | 'Medium' | 'High' }[];
-  timestamp: string;
-}
-
-const defaultFormData: FormData = {
-  age: '', gender: '', height: '', weight: '',
-  activityLevel: '', sleepDuration: '',
-  smokingHabit: '', alcoholConsumption: '',
-  familyHistory: '', existingConditions: '',
-};
-
-export interface FormContextType {
-  formData: FormData;
-  updateFormData: (data: Partial<FormData>) => void;
-  resetForm: () => void;
-  predictions: PredictionResult[];
-  predictionsLoading: boolean;
-  predictionsError: string | null;
-  reloadPredictions: () => Promise<void>;
-  addPrediction: (result: PredictionResult) => Promise<boolean>;
-}
-
-export const FormContext = createContext<FormContextType | null>(null);
+import { FormData, PredictionResult, FormContextType, defaultFormData, FormContext } from './FormContext.types';
 
 export const FormProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuth();
@@ -131,3 +88,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     </FormContext.Provider>
   );
 };
+
+// Re-export types for backward compatibility
+export type { FormData, PredictionResult, FormContextType };
+export { FormContext };
