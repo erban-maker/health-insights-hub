@@ -27,11 +27,17 @@ const Register = () => {
       toast({ title: 'Error', description: 'Password must be at least 6 characters', variant: 'destructive' });
       return;
     }
-    if (await register(name, email, password)) {
+    const result = await register(name, email, password);
+
+    if (result.success) {
       toast({ title: 'Welcome!', description: 'Account created successfully' });
       navigate('/dashboard');
     } else {
-      toast({ title: 'Error', description: 'Email already registered', variant: 'destructive' });
+      toast({
+        title: 'Error',
+        description: result.message || 'Registration failed',
+        variant: 'destructive',
+      });
     }
   };
 

@@ -6,10 +6,15 @@ interface User {
   email: string;
 }
 
+interface AuthResult {
+  success: boolean;
+  message?: string;
+}
+
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<AuthResult>;
+  register: (name: string, email: string, password: string) => Promise<AuthResult>;
   logout: () => void;
 }
 
@@ -27,45 +32,62 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return stored ? (JSON.parse(stored) as User) : null;
   });
 
-  const register = async (name: string, email: string, password: string) => {
+  const register = async (name: string, email: string, password: string): Promise<AuthResult> => {
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim().toLowerCase();
+
     try {
       const response = await fetch(`${API_BASE_URL}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name: normalizedName, email: normalizedEmail, password }),
       });
 
-      if (!response.ok) return false;
+      if (!response.ok) {
+        const errorPayload = (await response.json().catch(() => null)) as { message?: string } | null;
+        return {
+          success: false,
+          message: errorPayload?.message || 'Registration failed. Please try again.',
+        };
+      }
 
       const data = (await response.json()) as { user: User; token: string };
       setUser(data.user);
       localStorage.setItem('health_user', JSON.stringify(data.user));
       localStorage.setItem('health_token', data.token);
       localStorage.removeItem('health_users');
-      return true;
+      return { success: true };
     } catch {
-      return false;
+      return { success: false, message: 'Unable to reach server. Please check your connection.' };
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string): Promise<AuthResult> => {
+    const normalizedEmail = email.trim().toLowerCase();
+
     try {
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email: normalizedEmail, password }),
       });
 
-      if (!response.ok) return false;
+      if (!response.ok) {
+        const errorPayload = (await response.json().catch(() => null)) as { message?: string } | null;
+        return {
+          success: false,
+          message: errorPayload?.message || 'Login failed. Please try again.',
+        };
+      }
 
       const data = (await response.json()) as { user: User; token: string };
       setUser(data.user);
       localStorage.setItem('health_user', JSON.stringify(data.user));
       localStorage.setItem('health_token', data.token);
       localStorage.removeItem('health_users');
-      return true;
+      return { success: true };
     } catch {
-      return false;
+      return { success: false, message: 'Unable to reach server. Please check your connection.' };
     }
   };
 

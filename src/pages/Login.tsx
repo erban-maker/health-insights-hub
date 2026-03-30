@@ -17,11 +17,17 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (await login(email, password)) {
+    const result = await login(email, password);
+
+    if (result.success) {
       toast({ title: 'Welcome back!', description: 'Login successful' });
       navigate('/dashboard');
     } else {
-      toast({ title: 'Error', description: 'Invalid email or password', variant: 'destructive' });
+      toast({
+        title: 'Error',
+        description: result.message || 'Invalid email or password',
+        variant: 'destructive',
+      });
     }
   };
 
